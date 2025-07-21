@@ -9,4 +9,4 @@ A Python-based Discord bot for my writing group, with the following planned func
 
 3.) Helps manage and keeps track of a collaberative "Exquisite Corpse" project, where writers take turns adding prose to the same story.
 
-3.) Comments "¯\_(ツ)_/¯" if "/shrug" is typed anywhere in a comment. 
+3.) Comments "¯\\\_(ツ)_/¯" if "/shrug" is typed anywhere in a comment. 
