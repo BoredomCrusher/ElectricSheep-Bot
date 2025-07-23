@@ -88,35 +88,36 @@ class Tracker(commands.Cog):
         self.tracker_message_id = msg.id
         self.tracker_channel_id = channel.id
         
-    # I'm pretty sure I can delete this, I never used it
     @daily_update.before_loop
     async def before_daily_update(self):
         await self.bot.wait_until_ready()
     
-    @commands.command()
-    async def read(self, ctx, pages: int):
-        data = load_data()
-        user_id = str(ctx.author.id)
-        data.setdefault(user_id, {"read": 0, "write": 0})
-        data[user_id]["read"] += pages
-        save_data(data)
-        await ctx.send(f"📖 {ctx.author.display_name} logged {pages} pages!")
+    # I didn't use any of these, but I'm keeping this for now just in case I want to use them in the future
+    
+    # @commands.command()
+    # async def read(self, ctx, pages: int):
+    #     data = load_data()
+    #     user_id = str(ctx.author.id)
+    #     data.setdefault(user_id, {"read": 0, "write": 0})
+    #     data[user_id]["read"] += pages
+    #     save_data(data)
+    #     await ctx.send(f"📖 {ctx.author.display_name} logged {pages} pages!")
 
-    @commands.command()
-    async def write(self, ctx, words: int):
-        data = load_data()
-        user_id = str(ctx.author.id)
-        data.setdefault(user_id, {"read": 0, "write": 0})
-        data[user_id]["write"] += words
-        save_data(data)
-        await ctx.send(f"✍️ {ctx.author.display_name} logged {words} words!")
+    # @commands.command()
+    # async def write(self, ctx, words: int):
+    #     data = load_data()
+    #     user_id = str(ctx.author.id)
+    #     data.setdefault(user_id, {"read": 0, "write": 0})
+    #     data[user_id]["write"] += words
+    #     save_data(data)
+    #     await ctx.send(f"✍️ {ctx.author.display_name} logged {words} words!")
 
-    @commands.command()
-    async def progress(self, ctx):
-        data = load_data()
-        user_id = str(ctx.author.id)
-        stats = data.get(user_id, {"read": 0, "write": 0})
-        await ctx.send(f"📊 {ctx.author.display_name}'s Progress — Read: {stats['read']} pages, Write: {stats['write']} words.")
+    # @commands.command()
+    # async def progress(self, ctx):
+    #     data = load_data()
+    #     user_id = str(ctx.author.id)
+    #     stats = data.get(user_id, {"read": 0, "write": 0})
+    #     await ctx.send(f"📊 {ctx.author.display_name}'s Progress — Read: {stats['read']} pages, Write: {stats['write']} words.")
         
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
