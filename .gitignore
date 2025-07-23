@@ -3,3 +3,6 @@
 
 # data
 tracker.json
+
+# pycache
+cogs/__pycache__/

@@ -10,6 +10,15 @@ class Shrug(commands.Cog):
             return
         if "/shrug" in message.content:
             await message.channel.send("¯\\_(ツ)_/¯")
+        if "good bot" in message.content.lower():
+            emoji = self.bot.get_emoji(1058902343539761274)
+            if emoji:
+                await message.channel.send(f"{emoji}")
+        if "hell yeah" in message.content:
+            emoji = self.bot.get_emoji(1058884605752643654)
+            if emoji:
+                await message.channel.send(f"{emoji}")
+        
         await self.bot.process_commands(message)
 
 async def setup(bot):

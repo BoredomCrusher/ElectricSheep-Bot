@@ -27,6 +27,7 @@ for ext in initial_extensions:
 async def main():
     async with bot:
         await bot.load_extension("cogs.shrug")
+        await bot.load_extension("cogs.tracker")
         await bot.start(TOKEN)
         
 asyncio.run(main())
