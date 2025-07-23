@@ -10,6 +10,7 @@ class Shrug(commands.Cog):
             return
         if "/shrug" in message.content:
             await message.channel.send("¯\\_(ツ)_/¯")
+        await self.bot.process_commands(message)
 
 async def setup(bot):
     await bot.add_cog(Shrug(bot))

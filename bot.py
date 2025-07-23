@@ -2,6 +2,7 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+import asyncio
 
 load_dotenv()
 
@@ -19,6 +20,13 @@ async def on_ready():
     print(f'{bot.user} has awakened, beep beep I\'m a sheep')
 
 for ext in initial_extensions:
-    bot.load_extension(ext)
+     bot.load_extension(ext)
 
-bot.run(TOKEN)
+# bot.run(TOKEN)
+
+async def main():
+    async with bot:
+        await bot.load_extension("cogs.shrug")
+        await bot.start(TOKEN)
+        
+asyncio.run(main())
