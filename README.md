@@ -11,6 +11,8 @@ A Python-based Discord bot for my writing group, with the following planned func
 
 4.) Comments "¯\\\_(ツ)_/¯" if "/shrug" is typed anywhere in a comment. 
 
+# 
+
 Possible additions:
 
 1.) If I wake up and decide I hate my GPU:
