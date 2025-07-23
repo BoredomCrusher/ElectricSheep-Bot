@@ -1,2 +1,5 @@
 # Environments
 .env
+
+# data
+tracker.json
