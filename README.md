@@ -15,6 +15,8 @@ A Python-based Discord bot for my writing group, with the following planned func
 
 Possible additions:
 
-1.) If I wake up and decide I hate my GPU:
+1.) Post Unix timestamp of local time on a specific day when prompted. 
+
+2.) If I wake up and decide I hate my GPU:
 
   • Use bot to mine Bitcoin until my computer is set on fire.
