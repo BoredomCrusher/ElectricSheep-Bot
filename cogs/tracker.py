@@ -1,6 +1,7 @@
 from discord.ext import commands, tasks
 import json, os
 import datetime
+import math
 
 DATA_FILE = "data/tracker.json"
 # currently using the bot-spam channel, change this to the tracker channel later
@@ -57,13 +58,34 @@ class Tracker(commands.Cog):
 
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
     
-    @tasks.loop(hours = 24)
+    # @tasks.loop(hours = 24)
+    @tasks.loop(hours = 1000)
     async def daily_update(self):
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(CHANNEL_ID)
         if not channel:
             print("-------------------ERROR: get_channel doesn't work lmao-------------------")
             return
+        
+        data = load_data()
+
+        # Penalize users who didn’t react yesterday
+        # max() is so scores don't go negative
+        for user_id in data:
+            if user_id not in self.today_readers:
+                data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
+            if user_id not in self.today_writers:
+                data[user_id]["write"] = max(0, math.floor(data[user_id]["write"] / 2))
+
+        save_data(data)
+        
+        
+        # Leaderboard
+        # commented out for now so I don't ping everyone every day
+        # for user_id in data:
+        #     member = self.bot.get_user(int(user_id))  # Convert string back to int
+        #     name = member.display_name if member else f"<@{user_id}>"
+        #     await channel.send(f"{name}: reading streak {data[user_id]['read']} writing streak {data[user_id]['write']}")
         
         # Resetting so it still displays the daily message.
         self.today_readers = set()
