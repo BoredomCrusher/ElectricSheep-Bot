@@ -1,8 +1,12 @@
 from discord.ext import commands, tasks
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
-import json, os
+load_dotenv()
+from datetime import timedelta, timezone
 import datetime
+import discord
+import asyncio
+import json, os
 import pytz
 import math
 
@@ -39,6 +43,7 @@ class Tracker(commands.Cog):
         self.today_readers = set() # strings
         self.today_writers = set() # strings
         self.daily_update.start()
+        self.delete_old_messages.start()
         
         try:
             with open("data/meta.json", "r") as f:
@@ -106,9 +111,7 @@ class Tracker(commands.Cog):
         
         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
-        load_dotenv()
         guild = channel.guild
-        print(guild)
         
         # Leaderboard
         # Sort by reading and writing streaks separately
@@ -162,6 +165,32 @@ class Tracker(commands.Cog):
         
     @daily_update.before_loop
     async def before_daily_update(self):
+        await self.bot.wait_until_ready()
+        
+    #MAX_AGE = timedelta(days=3)
+    @tasks.loop(seconds = 30)
+    async def delete_old_messages(self):
+        channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
+        print(channel)
+        # MAX_AGE = timedelta(days=3)
+        MAX_AGE = timedelta(seconds=20)
+        
+        async for message in channel.history(limit=100):
+            now = datetime.datetime.now(pytz.timezone("US/Pacific"))
+            message_time = message.created_at.astimezone(pytz.timezone("US/Pacific"))
+            message_age = now - message_time
+            if message_age > MAX_AGE:
+                try:
+                    await message.delete()
+                    print("message deleted")
+                    await asyncio.sleep(1)
+                except discord.Forbidden:
+                    print(f"Cannot delete message {message.id}")
+                except discord.HTTPException as e:
+                    print(f"Failed to delete message {message.id} : {e}")
+    
+    @delete_old_messages.before_loop
+    async def before_delete_old_messages(self):
         await self.bot.wait_until_ready()
         
     @commands.Cog.listener()
@@ -221,6 +250,6 @@ class Tracker(commands.Cog):
                 await msg.edit(content=new_content)
             except Exception as e:
                 print(f"Couldn't edit tracker message: {e}")
-
+    
 async def setup(bot):
     await bot.add_cog(Tracker(bot))
