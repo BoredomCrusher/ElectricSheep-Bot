@@ -20,7 +20,9 @@ class Tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.tracker_message_id = None
-        self.tracker_channel_id = None 
+        self.tracker_channel_id = None
+        self.wiriting_emoji = None 
+        self.reading_emoji = None
         self.today_readers = set() # strings
         self.today_writers = set() # strings
         self.daily_update.start()
@@ -67,12 +69,14 @@ class Tracker(commands.Cog):
         self.today_readers = set()
         self.today_writers = set()
         
+        self.wiriting_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         today = datetime.date.today().strftime("%A, %B %d, %Y")
         msg = await channel.send(
-            f"Today is **{today}**.\n React with 📖 if you read today and ✍️ if you wrote today."
+            f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.wiriting_emoji} if you wrote today."
         )
-        await msg.add_reaction("📖")
-        await msg.add_reaction("✍️")
+        await msg.add_reaction(str(self.reading_emoji))
+        await msg.add_reaction(str(self.wiriting_emoji))
 
         self.tracker_message_id = msg.id
         self.tracker_channel_id = channel.id
@@ -91,6 +95,9 @@ class Tracker(commands.Cog):
         if payload.message_id != getattr(self, "tracker_message_id", None):
             print(f"Ignoring reaction on message {payload.message_id}, expected {self.tracker_message_id}")
             return
+        
+        self.wiriting_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
 
         user_id = str(payload.user_id)
         emoji = payload.emoji.name
@@ -100,12 +107,14 @@ class Tracker(commands.Cog):
 
         updated = False
 
-        if emoji == "📖" and user_id not in self.today_readers:
+        # emoji needs to be compared to the name of the cuustom emoji instead of self.bot.get_emoji()
+        if emoji == "frogReading" and user_id not in self.today_readers:
             data[user_id]["read"] += 1
             self.today_readers.add(user_id)
             updated = True
 
-        elif emoji == "✍️" and user_id not in self.today_writers:
+        # emoji needs to be compared to the name of the cuustom emoji instead of self.bot.get_emoji()
+        elif emoji == "bulbaWriter" and user_id not in self.today_writers:
             data[user_id]["write"] += 1
             self.today_writers.add(user_id)
             updated = True
@@ -120,7 +129,7 @@ class Tracker(commands.Cog):
 
             today = datetime.date.today().strftime("%A, %B %d, %Y")
             new_content = (
-                f"Today is **{today}**. React with 📖 if you read today and ✍️ if you wrote today.\n\n"
+                f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.wiriting_emoji} if you wrote today.\n\n"
                 f"**Today's readers:**\n{readers_text}\n\n"
                 f"**Today's writers:**\n{writers_text}"
             )
