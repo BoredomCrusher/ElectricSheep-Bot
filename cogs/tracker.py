@@ -23,7 +23,6 @@ class Tracker(commands.Cog):
         self.tracker_channel_id = None 
         self.today_readers = set() # strings
         self.today_writers = set() # strings
-        # self.testing_to_break_stuff.start()
         self.daily_update.start()
         
         try:
@@ -55,16 +54,6 @@ class Tracker(commands.Cog):
             writers_text.append(f"{name}: {stats['write']}")
 
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
-        
-    # @tasks.loop(seconds = 3)
-    # async def testing_to_break_stuff(self):
-    #     channel = self.bot.get_channel(CHANNEL_ID)
-    #     await channel.send(f"yay this basic functionality works")
-        
-    # @testing_to_break_stuff.before_loop
-    # async def before_testing_to_break_stuff(self):
-    #     await self.bot.wait_until_ready()
-        
     
     @tasks.loop(hours = 24)
     async def daily_update(self):
@@ -74,7 +63,7 @@ class Tracker(commands.Cog):
             print("-------------------ERROR: get_channel doesn't work lmao-------------------")
             return
         
-        # Resetting so it still displays the daily message
+        # Resetting so it still displays the daily message.
         self.today_readers = set()
         self.today_writers = set()
         
@@ -91,41 +80,14 @@ class Tracker(commands.Cog):
     @daily_update.before_loop
     async def before_daily_update(self):
         await self.bot.wait_until_ready()
-    
-    # I didn't use any of these, but I'm keeping this for now just in case I want to use them in the future
-    
-    # @commands.command()
-    # async def read(self, ctx, pages: int):
-    #     data = load_data()
-    #     user_id = str(ctx.author.id)
-    #     data.setdefault(user_id, {"read": 0, "write": 0})
-    #     data[user_id]["read"] += pages
-    #     save_data(data)
-    #     await ctx.send(f"📖 {ctx.author.display_name} logged {pages} pages!")
-
-    # @commands.command()
-    # async def write(self, ctx, words: int):
-    #     data = load_data()
-    #     user_id = str(ctx.author.id)
-    #     data.setdefault(user_id, {"read": 0, "write": 0})
-    #     data[user_id]["write"] += words
-    #     save_data(data)
-    #     await ctx.send(f"✍️ {ctx.author.display_name} logged {words} words!")
-
-    # @commands.command()
-    # async def progress(self, ctx):
-    #     data = load_data()
-    #     user_id = str(ctx.author.id)
-    #     stats = data.get(user_id, {"read": 0, "write": 0})
-    #     await ctx.send(f"📊 {ctx.author.display_name}'s Progress — Read: {stats['read']} pages, Write: {stats['write']} words.")
         
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        # Ignore bot's own reactions
+        # Ignores bot's own reactions.
         if str(payload.user_id) == str(self.bot.user.id):
             return
 
-        # Make sure it's reacting to today's tracker message
+        # Makes sure it's reacting to today's tracker message.
         if payload.message_id != getattr(self, "tracker_message_id", None):
             print(f"Ignoring reaction on message {payload.message_id}, expected {self.tracker_message_id}")
             return
@@ -138,13 +100,11 @@ class Tracker(commands.Cog):
 
         updated = False
 
-        # if emoji == "📖" and user_id not in getattr(self, "today_readers", set()):
         if emoji == "📖" and user_id not in self.today_readers:
             data[user_id]["read"] += 1
             self.today_readers.add(user_id)
             updated = True
 
-        # elif emoji == "✍️" and user_id not in getattr(self, "today_writers", set()):
         elif emoji == "✍️" and user_id not in self.today_writers:
             data[user_id]["write"] += 1
             self.today_writers.add(user_id)
@@ -153,7 +113,7 @@ class Tracker(commands.Cog):
         if updated:
             save_data(data)
 
-            # Regenerate the message content
+            # Regenerate the message content.
             readers_text, writers_text = self.format_progress(
                 data, self.today_readers, self.today_writers
             )
@@ -165,7 +125,7 @@ class Tracker(commands.Cog):
                 f"**Today's writers:**\n{writers_text}"
             )
 
-            # Edit the original message
+            # Edit the original message.
             channel = self.bot.get_channel(self.tracker_channel_id)
             try:
                 msg = await channel.fetch_message(self.tracker_message_id)
