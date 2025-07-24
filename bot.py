@@ -20,9 +20,7 @@ async def on_ready():
     print(f'{bot.user} has awakened, beep beep I\'m a sheep')
 
 for ext in initial_extensions:
-     bot.load_extension(ext)
-
-# bot.run(TOKEN)
+    bot.load_extension(ext)
 
 async def main():
     async with bot:

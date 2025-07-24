@@ -1,28 +1,40 @@
 from discord.ext import commands, tasks
+from zoneinfo import ZoneInfo
+from dotenv import load_dotenv
 import json, os
 import datetime
+import pytz
 import math
 
 DATA_FILE = "data/tracker.json"
-# currently using the bot-spam channel, change this to the tracker channel later
-CHANNEL_ID = 1396960304247603210
+META_FILE = "data/meta.json"
 
 def load_data():
     if not os.path.exists(DATA_FILE):
         return {}
     with open(DATA_FILE, "r") as f:
         return json.load(f)
+    
+def load_meta():
+    if not os.path.exists(META_FILE):
+        return {}
+    with open(META_FILE, "r") as f:
+        return json.load(f)
 
 def save_data(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
+        
+def save_meta(meta):
+    with open(META_FILE, "w") as f:
+        json.dump(meta, f, indent=2)
 
 class Tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.tracker_message_id = None
         self.tracker_channel_id = None
-        self.wiriting_emoji = None 
+        self.writing_emoji = None 
         self.reading_emoji = None
         self.today_readers = set() # strings
         self.today_writers = set() # strings
@@ -59,18 +71,31 @@ class Tracker(commands.Cog):
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
     
     # @tasks.loop(hours = 24)
-    @tasks.loop(hours = 1000)
+    # @tasks.loop(hours = 1000)
+    # @tasks.loop(time=datetime.time(hour=15, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(seconds = 10)
     async def daily_update(self):
+        now = datetime.datetime.now(pytz.timezone("US/Pacific"))
+        print(f"daily update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
         await self.bot.wait_until_ready()
-        channel = self.bot.get_channel(CHANNEL_ID)
+        channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
         if not channel:
             print("-------------------ERROR: get_channel doesn't work lmao-------------------")
             return
         
         data = load_data()
-
-        # Penalize users who didn’t react yesterday
-        # max() is so scores don't go negative
+        meta = load_meta()
+        
+        today_str = datetime.date.today().isoformat()
+        
+        # Prevent duplicate penalty if already updated today
+        # if meta.get("last_updated_date") ==  today_str:
+        #     print("Daily update already performed today.")
+        #     return
+        
+        # Penalize users who didn’t react yesterday,
+        # max() is so scores don't go negative.
+        # Currently, the penalty is that their score is divided by two
         for user_id in data:
             if user_id not in self.today_readers:
                 data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
@@ -79,29 +104,61 @@ class Tracker(commands.Cog):
 
         save_data(data)
         
+        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        load_dotenv()
+        guild = channel.guild
+        print(guild)
         
         # Leaderboard
-        # commented out for now so I don't ping everyone every day
-        # for user_id in data:
-        #     member = self.bot.get_user(int(user_id))  # Convert string back to int
-        #     name = member.display_name if member else f"<@{user_id}>"
-        #     await channel.send(f"{name}: reading streak {data[user_id]['read']} writing streak {data[user_id]['write']}")
-        
+        # Sort by reading and writing streaks separately
+        sorted_by_read = sorted(data.items(), key=lambda item: item[1]['read'], reverse=True)
+        sorted_by_write = sorted(data.items(), key=lambda item: item[1]['write'], reverse=True)
+
+        read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
+        write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
+
+        for user_id, stats in sorted_by_read:
+            try:
+                member = await guild.fetch_member(int(user_id))
+                name = member.display_name
+            except Exception:
+                print(f"Member name not found for ID {user_id}")
+                name = f"<@{user_id}>"
+            read_lines.append(f"{name}: {stats['read']}")
+
+        for user_id, stats in sorted_by_write:
+            try:
+                member = await guild.fetch_member(int(user_id))
+                name = member.display_name
+            except Exception:
+                print(f"Member name not found for ID {user_id}")
+                name = f"<@{user_id}>"
+            write_lines.append(f"{name}: {stats['write']}")
+
+        # Send leaderboard as one message
+        await channel.send("\n".join(read_lines + ["", *write_lines]))
+
         # Resetting so it still displays the daily message.
         self.today_readers = set()
         self.today_writers = set()
         
-        self.wiriting_emoji = self.bot.get_emoji(1061522051501928498)
-        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        
         today = datetime.date.today().strftime("%A, %B %d, %Y")
         msg = await channel.send(
-            f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.wiriting_emoji} if you wrote today."
+            f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today."
         )
         await msg.add_reaction(str(self.reading_emoji))
-        await msg.add_reaction(str(self.wiriting_emoji))
+        await msg.add_reaction(str(self.writing_emoji))
 
         self.tracker_message_id = msg.id
         self.tracker_channel_id = channel.id
+        
+        meta["tracker_message_id"] = self.tracker_message_id
+        meta["tracker_channel_id"] = self.tracker_channel_id
+        meta["last_updated_date"] = today_str
+        
+        save_meta(meta)
         
     @daily_update.before_loop
     async def before_daily_update(self):
@@ -118,7 +175,7 @@ class Tracker(commands.Cog):
             print(f"Ignoring reaction on message {payload.message_id}, expected {self.tracker_message_id}")
             return
         
-        self.wiriting_emoji = self.bot.get_emoji(1061522051501928498)
+        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
 
         user_id = str(payload.user_id)
@@ -151,7 +208,7 @@ class Tracker(commands.Cog):
 
             today = datetime.date.today().strftime("%A, %B %d, %Y")
             new_content = (
-                f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.wiriting_emoji} if you wrote today.\n\n"
+                f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                 f"**Today's readers:**\n{readers_text}\n\n"
                 f"**Today's writers:**\n{writers_text}"
             )
@@ -164,7 +221,6 @@ class Tracker(commands.Cog):
                 await msg.edit(content=new_content)
             except Exception as e:
                 print(f"Couldn't edit tracker message: {e}")
-
 
 async def setup(bot):
     await bot.add_cog(Tracker(bot))
