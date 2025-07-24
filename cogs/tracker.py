@@ -74,11 +74,8 @@ class Tracker(commands.Cog):
             writers_text.append(f"{name}: {stats['write']}")
 
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
-    
-    # @tasks.loop(hours = 24)
-    # @tasks.loop(hours = 1000)
-    # @tasks.loop(time=datetime.time(hour=15, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
-    @tasks.loop(seconds = 10)
+
+    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
@@ -167,13 +164,10 @@ class Tracker(commands.Cog):
     async def before_daily_update(self):
         await self.bot.wait_until_ready()
         
-    #MAX_AGE = timedelta(days=3)
-    @tasks.loop(seconds = 30)
+    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def delete_old_messages(self):
         channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
-        print(channel)
-        # MAX_AGE = timedelta(days=3)
-        MAX_AGE = timedelta(seconds=20)
+        MAX_AGE = timedelta(days = 3)
         
         async for message in channel.history(limit=100):
             now = datetime.datetime.now(pytz.timezone("US/Pacific"))
@@ -182,7 +176,7 @@ class Tracker(commands.Cog):
             if message_age > MAX_AGE:
                 try:
                     await message.delete()
-                    print("message deleted")
+                    print("old message deleted")
                     await asyncio.sleep(1)
                 except discord.Forbidden:
                     print(f"Cannot delete message {message.id}")

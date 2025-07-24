@@ -19,8 +19,10 @@ initial_extensions = ['cogs.submission_grinder', 'cogs.tracker', 'cogs.exquisite
 async def on_ready():
     print(f'{bot.user} has awakened, beep beep I\'m a sheep')
 
+# This is supposed to have an await, but not all of the files are done yet,
+# so this is going to be added under main once all of the functions are ready.
 for ext in initial_extensions:
-    bot.load_extension(ext)
+     bot.load_extension(ext)
 
 async def main():
     async with bot:
