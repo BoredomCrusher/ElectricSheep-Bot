@@ -211,8 +211,9 @@ class Tracker(commands.Cog):
             return
 
         # Makes sure it's reacting to today's tracker message.
+        # Print statement for error handling intentionally removed because
+        # it was spamming the terminal.
         if payload.message_id != getattr(self, "tracker_message_id", None):
-            print(f"Ignoring reaction on message {payload.message_id}, expected {self.tracker_message_id}")
             return
         
         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
