@@ -85,30 +85,46 @@ class Tracker(commands.Cog):
             print("-------------------ERROR: get_channel doesn't work lmao-------------------")
             return
         
+        guild = channel.guild
+        
         data = load_data()
         meta = load_meta()
         
         today_str = datetime.date.today().isoformat()
         
-        # Prevent duplicate penalty if already updated today
-        # if meta.get("last_updated_date") ==  today_str:
-        #     print("Daily update already performed today.")
-        #     return
+        # Prevents duplicate penalty if already updated today.
+        # Ironically, this might be redundant since it currently only posts at midnight.
+        if meta.get("last_updated_date") ==  today_str:
+            print("Daily update already performed today.")
+            return
         
-        # Penalize users who didn’t react yesterday,
+        # Penalizes users who didn’t react yesterday,
         # max() is so scores don't go negative.
-        # Currently, the penalty is that their score is divided by two
+        # Currently, the penalty is that their score is divided by two.
+        rip = self.bot.get_emoji(1398098610733842452)
         for user_id in data:
             if user_id not in self.today_readers:
+                try:
+                    member = await guild.fetch_member(int(user_id))
+                    name = member.display_name
+                except Exception:
+                    name = f"<@{user_id}>"
+                await channel.send(f"{name}'s reading streak has been broken {rip}")
                 data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
             if user_id not in self.today_writers:
+                try:
+                    member = await guild.fetch_member(int(user_id))
+                    name = member.display_name
+                except Exception:
+                    name = f"<@{user_id}>"
+                await channel.send(f"{name}'s writing streak has been broken {rip}")
                 data[user_id]["write"] = max(0, math.floor(data[user_id]["write"] / 2))
 
         save_data(data)
         
         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
-        guild = channel.guild
+        
         
         # Leaderboard
         # Sort by reading and writing streaks separately
