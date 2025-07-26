@@ -248,7 +248,7 @@ class Tracker(commands.Cog):
 
             today = datetime.date.today().strftime("%A, %B %d, %Y")
             new_content = (
-                f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
+                f"Today is **{today}**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                 f"**Today's readers:**\n{readers_text}\n\n"
                 f"**Today's writers:**\n{writers_text}"
             )
