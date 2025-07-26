@@ -23,6 +23,8 @@ class Shrug(commands.Cog):
             emoji = self.bot.get_emoji(1058884605752643654)
             if emoji:
                 await message.channel.send(f"{emoji}")
+        if "just write" in message.content:
+            await message.channel.send(f"it's that easy.")
         
         await self.bot.process_commands(message)
 
