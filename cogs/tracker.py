@@ -104,7 +104,7 @@ class Tracker(commands.Cog):
         # Currently, the penalty is that their score is divided by two.
         rip = self.bot.get_emoji(1398098610733842452)
         for user_id in data:
-            if user_id not in self.today_readers:
+            if data[user_id]["read"] != 0 and user_id not in self.today_readers:
                 try:
                     member = await guild.fetch_member(int(user_id))
                     name = member.display_name
@@ -112,7 +112,7 @@ class Tracker(commands.Cog):
                     name = f"<@{user_id}>"
                 await channel.send(f"{name}'s reading streak has been broken {rip}")
                 data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
-            if user_id not in self.today_writers:
+            if data[user_id]["write"] != 0 and user_id not in self.today_writers:
                 try:
                     member = await guild.fetch_member(int(user_id))
                     name = member.display_name
@@ -249,7 +249,7 @@ class Tracker(commands.Cog):
 
             today = datetime.date.today().strftime("%A, %B %d, %Y")
             new_content = (
-                f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
+                f"Today is **{today}**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                 f"**Today's readers:**\n{readers_text}\n\n"
                 f"**Today's writers:**\n{writers_text}"
             )
