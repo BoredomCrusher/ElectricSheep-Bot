@@ -40,8 +40,6 @@ class Tracker(commands.Cog):
         self.tracker_channel_id = None
         self.writing_emoji = None 
         self.reading_emoji = None
-        self.today_readers = set() # strings
-        self.today_writers = set() # strings
         self.daily_update.start()
         self.delete_old_messages.start()
         
@@ -50,6 +48,12 @@ class Tracker(commands.Cog):
                 meta = json.load(f)
                 self.tracker_message_id = meta.get("tracker_message_id")
                 self.tracker_channel_id = meta.get("tracker_channel_id")
+
+                # Daily writers and readers are no longer local,
+                # saving them in meta.json instead means they aren't reset
+                # if the bot crashses or is intentionally rebooted.
+                self.today_readers = set(meta.get("today's readers", [])) # strings
+                self.today_writers = set(meta.get("today's writers", [])) # strings
         except FileNotFoundError:
             pass
 
@@ -160,7 +164,6 @@ class Tracker(commands.Cog):
         self.today_readers = set()
         self.today_writers = set()
         
-        
         today = datetime.date.today().strftime("%A, %B %d, %Y")
         msg = await channel.send(
             f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today."
@@ -171,6 +174,8 @@ class Tracker(commands.Cog):
         self.tracker_message_id = msg.id
         self.tracker_channel_id = channel.id
         
+        meta["today's readers"] = list(self.today_readers)
+        meta["today's writers"] = list(self.today_writers)
         meta["tracker_message_id"] = self.tracker_message_id
         meta["tracker_channel_id"] = self.tracker_channel_id
         meta["last_updated_date"] = today_str
@@ -241,6 +246,11 @@ class Tracker(commands.Cog):
 
         if updated:
             save_data(data)
+
+            meta = load_meta()
+            meta["today's readers"] = list(self.today_readers)
+            meta["today's writers"] = list(self.today_writers)
+            save_meta(meta)
 
             # Regenerate the message content.
             readers_text, writers_text = self.format_progress(
