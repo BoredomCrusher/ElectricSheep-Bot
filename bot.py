@@ -13,7 +13,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Load Cogs (feature modules)
-initial_extensions = ['cogs.submission_grinder', 'cogs.tracker', 'cogs.exquisite_corpse', 'cogs.shrug']
+initial_extensions = ['cogs.submission_grinder', 'cogs.tracker', 'cogs.exquisite_corpse', 'cogs.commands']
 
 @bot.event
 async def on_ready():
@@ -26,7 +26,7 @@ for ext in initial_extensions:
 
 async def main():
     async with bot:
-        await bot.load_extension("cogs.shrug")
+        await bot.load_extension("cogs.commands")
         await bot.load_extension("cogs.tracker")
         await bot.start(TOKEN)
         

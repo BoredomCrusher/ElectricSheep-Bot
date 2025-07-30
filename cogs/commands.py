@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-class Shrug(commands.Cog):
+class Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -29,4 +29,4 @@ class Shrug(commands.Cog):
         await self.bot.process_commands(message)
 
 async def setup(bot):
-    await bot.add_cog(Shrug(bot))
+    await bot.add_cog(Commands(bot))
