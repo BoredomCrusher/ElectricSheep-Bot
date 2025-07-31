@@ -26,11 +26,15 @@ NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.json"
 def fetch_website():
     print("Scraping website.")
     response = requests.get(os.getenv("URL"))
+    if not os.path.exists("data/cached_website.html"):
+        return {}
     with open("data/cached_website.html", "w", encoding="utf-8") as f:
         f.write(response.text)
         
 # Reads html, currently used on html manually copied from source on 07-31-2025.
 def read_cached_html():
+    if not os.path.exists("data/cached_website.html"):
+        return {}
     with open("data/cached_website.html", "r", encoding="utf-8") as f:
         return f.read()
     
