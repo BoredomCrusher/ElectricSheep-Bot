@@ -50,7 +50,7 @@ class Submission_Grinder(commands.cog):
         self.html =  read_cached_html()
         self.daily_grinder_update.start()
         
-    @tasks.loop(time=datetime.time(hour=13, minute=15, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(time=datetime.time(hour=13, minute=40, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_grinder_update(self):
         new_markets = parse_recently_added(self.html)
         
