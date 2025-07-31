@@ -89,7 +89,7 @@ class Submission_Grinder(commands.Cog):
         self.daily_grinder_update.start()
         
     # @tasks.loop(time=datetime.time(hour=15, minute=30, tzinfo=ZoneInfo("America/Los_Angeles")))
-    @tasks.loop(days = 10)
+    @tasks.loop(days=10)
     async def daily_grinder_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
