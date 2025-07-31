@@ -43,7 +43,7 @@ def parse_recently_added(html):
         return [item.get_text(strip=True) for item in items]
     return []
 
-class Submission_Grinder(commands.cog):
+class Submission_Grinder(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         # currently bot-spam for testing
