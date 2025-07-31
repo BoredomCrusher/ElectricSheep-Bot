@@ -94,7 +94,8 @@ class Tracker(commands.Cog):
         data = load_data()
         meta = load_meta()
         
-        today_str = datetime.date.today().isoformat()
+        PST = ZoneInfo("America/Los_Angeles")
+        today_str = datetime.now(PST).date().isoformat()
         
         # Prevents duplicate penalty if already updated today.
         # Ironically, this might be redundant since it currently only posts at midnight.
@@ -191,8 +192,8 @@ class Tracker(commands.Cog):
         MAX_AGE = timedelta(days = 3)
         
         async for message in channel.history(limit=100):
-            now = datetime.datetime.now(pytz.timezone("US/Pacific"))
-            message_time = message.created_at.astimezone(pytz.timezone("US/Pacific"))
+            now = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
+            message_time = message.created_at.astimezone(ZoneInfo("America/Los_Angeles"))
             message_age = now - message_time
             if message_age > MAX_AGE:
                 try:
