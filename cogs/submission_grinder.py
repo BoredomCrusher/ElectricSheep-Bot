@@ -115,7 +115,6 @@ class Submission_Grinder(commands.Cog):
 
         content = "**Recently Added Markets:**\n" + "\n".join(f"- {line}" for line in formatted)
         
-        print(content)
         self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
         if not self.channel:
             print("-------------------ERROR: scraper get_channel doesn't work lmao-------------------")
