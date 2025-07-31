@@ -13,7 +13,6 @@ import json, os
 import asyncio
 import datetime
 from discord.ext import commands, tasks
-from datetime import datetime
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 load_dotenv()
