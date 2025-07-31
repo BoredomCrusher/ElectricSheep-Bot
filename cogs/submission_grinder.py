@@ -1,5 +1,5 @@
 '''
-1.) scrape from https://thegrinder.diabolicalplots.com/ once per day at midnight PST
+1.) scrape from website once per day at midnight PST
     - copy the current code of the main page while writing and testing 
       so I don't scrape it a lot of times in one day 
 2.) parse it and only grab from the "recently added" section
@@ -80,17 +80,16 @@ def parse_recently_added(html):
 
     return entries
 
-
-
 class Submission_Grinder(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         # currently bot-spam for testing
-        self.channel = channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
+        self.channel = None
         self.html =  None
         self.daily_grinder_update.start()
         
-    @tasks.loop(time=datetime.time(hour=14, minute=49, tzinfo=ZoneInfo("America/Los_Angeles")))
+    # @tasks.loop(time=datetime.time(hour=15, minute=30, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(days = 10)
     async def daily_grinder_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
@@ -117,6 +116,28 @@ class Submission_Grinder(commands.Cog):
         content = "**Recently Added Markets:**\n" + "\n".join(f"- {line}" for line in formatted)
         
         print(content)
+        self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
+        if not self.channel:
+            print("-------------------ERROR: scraper get_channel doesn't work lmao-------------------")
+            return
+        if len(content) > 2000:
+            print(f"⚠️ Message is too long ({len(content)} characters). Splitting...")
+            # Split into chunks
+            chunks = []
+            chunk = ""
+            for line in content.split("\n"):
+                if len(chunk) + len(line) + 1 > 2000:
+                    chunks.append(chunk)
+                    chunk = line
+                else:
+                    chunk += "\n" + line if chunk else line
+            if chunk:
+                chunks.append(chunk)
+
+            for c in chunks:
+                await self.channel.send(c)
+        else:
+            await self.channel.send(content)
         # Try to update existing message if it exists
         if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
             with open(NEW_MARKETS_MESSAGE_FILE, "r") as f:
@@ -128,11 +149,13 @@ class Submission_Grinder(commands.Cog):
                     return  # Exit after updating existing message
                 except discord.NotFound:
                     print("New markets message not found.")
+        else:
+            print(f"{NEW_MARKETS_MESSAGE_FILE} not found.")
 
         # Otherwise, post a new message
-        msg = await self.channel.send(content)
-        with open(NEW_MARKETS_MESSAGE_FILE, "w") as f:
-            json.dump({"message_id": msg.id}, f)
+        # msg = await self.channel.send(content)
+        #with open(NEW_MARKETS_MESSAGE_FILE, "w") as f:
+         #   json.dump({"message_id": msg.id}, f)
             
     @daily_grinder_update.before_loop
     async def before_daily_grinder_update(self):

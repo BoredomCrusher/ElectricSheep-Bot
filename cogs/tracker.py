@@ -86,7 +86,7 @@ class Tracker(commands.Cog):
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
         if not channel:
-            print("-------------------ERROR: get_channel doesn't work lmao-------------------")
+            print("-------------------ERROR: tracker get_channel doesn't work lmao-------------------")
             return
         
         guild = channel.guild
