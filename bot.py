@@ -26,8 +26,9 @@ for ext in initial_extensions:
 
 async def main():
     async with bot:
-        await bot.load_extension("cogs.Bot_Commands")
+        await bot.load_extension("cogs.bot_commands")
         await bot.load_extension("cogs.tracker")
+        await bot.load_extension("cogs.submission_grinder")
         await bot.start(TOKEN)
         
 asyncio.run(main())

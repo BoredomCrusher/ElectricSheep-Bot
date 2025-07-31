@@ -1,0 +1,1810 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>The Submission Grinder</title>
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="/bundles/core-styles?v=HKCQrZcuwMr6y-0cjiAl0HKwJp3TVTSb2vlbSWiTFuU1" rel="stylesheet"/>
+
+
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-1731889-6']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        function initNavBar() {
+            document.querySelectorAll(".has-submenu").forEach((el) => {
+                el.addEventListener("mouseover", () => {
+                    openSubmenu(el);
+                });
+                el.addEventListener("mouseout", () => {
+                    closeSubmenu(el);
+                });
+                el.addEventListener("focusin", () => {
+                    openSubmenu(el);
+                });
+                el.addEventListener("focusout", (event) => {
+                    if (!el.contains(event.relatedTarget)) {
+                        setTimeout(function () {
+                            closeSubmenu(el);
+                        }, 100);
+
+                    }
+                });
+            });
+        }
+
+        function openSubmenu(el) {
+            const link = el.querySelector('a');
+            el.classList.add("open");
+            link.setAttribute('aria-expanded', "true");
+        }
+
+        function closeSubmenu(el) {
+            const link = el.querySelector('a');
+            el.classList.remove("open");
+            link.setAttribute('aria-expanded', "false");
+        }
+
+    </script>
+
+    
+    <script src="/bundles/jquery?v=1-O6fmrSxf4V9RvtFeNxwGWbS25djnlWoK7aZIPKIU81"></script>
+
+    <script src="/bundles/kendo?v=Wv0D2M69CUtnk3c8cryrXm0YyUT6iMmPQpFLffRwVxA1"></script>
+
+    <script src="/bundles/site?v=J50HwYZJr5Lt9oLg9ELlfxGEsRGMv1zOsoZ-c3BlfZM1"></script>
+
+
+
+    <meta name="viewport" content="width=device-width" />
+    <style>
+
+
+        .site-title {
+            align-items: center;
+            display: flex;
+            flex-flow: row;
+        }
+
+        .logo {
+            margin: 10px 15px;
+        }
+
+        .main {
+            background: #F8F8F8;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            margin: 0 auto;
+            max-width: 1018px;
+        }
+
+        .container {
+            /*background: white;*/
+            background: #5f6975;
+            margin: 20px 2.5%;
+        }
+
+        .content {
+            background: url("images/colors.png") top left repeat-x;
+            background-size: 180px 5px;
+            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            padding: 20px 2.5%;
+        }
+
+        .page-title {
+            text-align: center;
+        }
+
+        .navbar {
+            background-color: #097e94;
+            /*overflow: hidden;*/
+            padding: 0 25px;
+        }
+
+            .navbar ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .navbar li {
+                float: left;
+            }
+
+            /* Style the links inside the navigation bar */
+            .navbar a {
+                /*color: white;*/
+                display: inline-block;
+                text-align: center;
+                text-decoration: none;
+            }
+
+                /* Change the color of links on focus and hover */
+                .navbar a:hover, .navbar a:focus {
+                    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+                    background-color: #5f6975;
+                }
+
+                /* Add a color to the active/current link */
+                .navbar a.active {
+                    border-bottom: 3px solid black;
+                }
+
+        .submenu {
+            display: none;
+            background-color: #5f6975;
+            /*border-bottom: 8px solid #097e94;*/
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            /*position: absolute;*/
+            min-width: 140px;
+            z-index: 1;
+        }
+
+            .submenu li {
+                float: none;
+                background-color: #5f6975;
+                /*color: white;*/ /*makes it white*/
+            }
+
+
+                .submenu li:focus {
+                    float: none;
+                    /*background-color: #4b545f;*/
+                    color: white;
+                }
+
+            .submenu a {
+                /*border-bottom: 1px solid rgba(0, 0, 0, 0.1);*/
+                /*color: black;*/
+                display: block;
+                padding: 12px 16px;
+                text-align: left;
+            }
+
+                .submenu a:hover, .submenu a:focus {
+                    background-color: rgba(0, 0, 0, 0.05);
+                    box-shadow: none;
+                    /*on#5f6975*/
+                }
+
+        .has-submenu.open .submenu {
+            display: block;
+        }
+
+        .copyright {
+            border-top: 2px dashed #c0c0c0;
+            color: #4A4A4A;
+            line-height: 24px;
+            padding: 20px;
+        }
+
+        .product {
+            margin: 25px 0;
+        }
+
+        .flexbox {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
+        }
+
+        .centered {
+            align-self: center;
+        }
+
+        .left-image {
+            flex: 1;
+        }
+
+            .left-image img {
+                max-width: 300px;
+                width: 100%;
+            }
+
+        .right-content {
+            padding: 0 20px;
+            flex: 2;
+        }
+
+        
+
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.4);
+            height: 100%;
+            left: 0;
+            overflow: auto;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .modal {
+            /*background-color: white;*/
+            background-color: #5f6975;
+            border: 1px solid #888;
+            border-radius: 8px;
+            margin: 5% auto;
+            max-width: 600px;
+            padding: 15px;
+            width: 80%;
+        }
+
+        .form-elements {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input {
+            align-items: baseline;
+            display: flex;
+            flex-flow: row wrap;
+            margin: 15px 0;
+            /*position: relative;*/
+        }
+
+        .text-input input {
+            border: none;
+            border-bottom: 1px solid #4F4F4F;
+            box-shadow: none;
+            height: 2rem;
+            outline: none;
+            width: 250px;
+        }
+
+            .text-input input:focus {
+                /*border-bottom: 1px solid #097e94;*/
+                box-shadow: 0 1px 0 0 #097e94;
+            }
+
+        .text-input label {
+            color: #4F4F4F;
+            /*position: absolute;*/
+            -webkit-transition: color .2s ease-out, -webkit-transform .2s ease-out;
+        }
+
+            .text-input label.active {
+                -webkit-transform: translateY(-14px) scale(0.8);
+                transform-origin: 0 0;
+            }
+
+        .text-input input:focus + label {
+            color: #097e94;
+        }
+
+        .input input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .form-buttons {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: flex-end;
+        }
+
+            .form-buttons button {
+                margin: 0 10px;
+            }
+
+
+        .raised-button {
+            background-color: #fab545;
+            -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
+        }
+
+            .raised-button:hover, .raised-button:active, raised-button:focus {
+                background-color: #5f6975;
+                -webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14),0 1px 7px 0 rgba(0,0,0,0.12),0 3px 1px -1px rgba(0,0,0,0.2);
+            }
+
+            .raised-button:focus {
+                background-color: #5f6975;
+            }
+
+        .flat-button {
+            background: none;
+        }
+
+            .flat-button:hover, .flat-button:active, .flat-button:focus {
+                color: white;
+                background-color: #5f6975;
+            }
+
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        #openDialogButton {
+        }
+
+        #closeButton {
+            float: right;
+        }
+
+        #cancelButton {
+        }
+
+        #submitButton {
+        }
+    </style>
+</head>
+<body>
+
+
+    <div id="SiteWrapper" class="SiteWrapper">
+        <div class="SiteHeaderDivLeft">
+                <a href="/" target="_self"><img src="/Images/TheCoffeeGrinder.jpg" border="0" alt="Coffee Grinder logo with caption: The Grinder, brewing your submissions into something useful" /></a>
+        </div>
+        <hr />
+            <nav class="navbar" aria-label="Main menu">
+                <ul>
+                    <li class="has-submenu">
+                        <a href="#">Search ￬</a>
+
+                        <ul class="submenu">
+                            <li><a href="/Search/ByFilter?marketType=Fiction">Advanced Search(Fiction)</a></li>
+                            <li><a href="/Search/ByFilter?marketType=Poetry">Advanced Search(Poetry)</a></li>
+                            <li><a href="/Search/ByFilter?marketType=Nonfiction">Advanced Search(Nonfiction)</a></li>
+                            <li><a href="/Search/ByName">Search By Name</a></li>
+                            <li><a href="/Search/ByAlpha">Alphabetical Listing</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="has-submenu">
+                        <a href="#">Contact Us ￬</a>
+
+                        <ul class="submenu">
+                            <li><a href="/ContactUs">Drop us a line</a></li>
+                            <li><a href="/ContactUs/SuggestMarket">Suggest a Market</a></li>
+                        </ul>
+
+                    </li>
+
+                    <li class="has-submenu">
+                        <a href="#">Support ￬</a>
+                        <ul class="submenu">
+                            <li><a href="/Home/Donate">Donate</a></li>
+                            <li><a href="https://www.patreon.com/diabolicalplots" target="_blank">Become a Patron (external)</a></li>
+                            <li><a href="https://www.diabolicalplots.com/support/books/" target="_blank">Books (external)</a></li>
+                            <li><a href="https://voidmerch.threadless.com/collections/the-submission-grinder-x-voidmerch/" target="_blank">Merch (external)</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="has-submenu">
+                        <a href="#">More ￬</a>
+
+                        <ul class="submenu">
+                            <li><a href="/Home/Newsletter">Newsletter</a></li>
+                            <li><a href="/Home/FAQ">FAQ</a></li>
+                            <li><a href="/Home/Contributors">Contributors</a></li>
+                            <li><a href="/Home/Legal">Legal</a></li>
+                        </ul>
+
+                    </li>
+
+                        <li class="has-submenu">
+                            <a href="#">Log In ￬</a>
+
+                            <ul class="submenu">
+                                <li><a href="/Account/Login">Log In</a></li>
+                                <li><a href="/Account/Register">Register</a></li>
+                            </ul>
+
+                        </li>
+                </ul>
+            </nav>
+            <div id="appMenu" class="MenuDiv">
+                <div class="MenuMainDiv">
+                </div>
+            </div>
+
+                
+
+
+
+
+        
+    <section class="featured">
+        <div class="content-wrapper">
+            <div class="SectionHeader">
+                <hr />
+                
+                    
+                    <b>Latest Story: <a href='https://www.diabolicalplots.com/dp-fiction-125b-the-saint-of-arms-by-mason-yeater/' target='_blank'>The Saint of Arms</a> by Mason Yeater<br /><br />From the Archives: <a href='https://www.diabolicalplots.com/dp-fiction-6-the-superhero-registry-by-adam-gaylord/' target='_blank'>The Superhero Registry</a> by Adam Gaylord</b>
+                     
+                
+                <hr /><br />
+                <div class="AreaDiv">
+                    <div class="DefaultTopSection">
+                        <div class="DefaultSectionName">Welcome to The Submission Grinder!</div><br />
+                        The Submission Grinder is a donation-supported submission tracker and market database for writers of fiction, poetry, and nonfiction. Use our extensive and powerful search engine to find a home for your work.<br /><br />
+                        If you can't find a listing for a publisher you'd like to submit to, <a href="/ContactUs/SuggestMarket">suggest a new market listing</a>.<br /><br />
+                        If you have a feature suggestion or see a problem, please use the <a href="/ContactUs">Contact Us</a> page.<br />We love your feedback!<br /><br />
+                        We also publish speculative fiction online on our zine Diabolical Plots. We would love it if you <a href="/Market/Stories?id=3736" target="_blank">read our stories</a>!
+                    </div>
+                    <div class="DefaultTopStatSection">
+                        <div class="SectionName">Site Statistics</div><br />
+                        Markets: 18068 (3076 open)<br />
+                        Markets Recently Updated: 78<br />
+                        Markets Recently Added: 60<br />
+                        Users: 12529<br />
+                        Submissions: 717191
+                    </div><br />
+                    <div class="DefaultDonateSection">
+                        <a href="/Home/Donate" target="_self"><img src="/Images/btn_donate_LG.gif" border="0" /></a><br />
+                    </div>
+                    <div class="CenteredSiteMessage">We run entirely on your generosity!  Click the Donate link for PayPal options or <a href="https://www.patreon.com/diabolicalplots" target="_blank">pledge on Patreon</a> or <a href="http://www.diabolicalplots.com/books" target="_blank">buy one of our books</a> to help keep the site going.</div>
+                </div>
+                <br />
+                <div  class="AreaDiv">
+                    <b>Pro Tip:</b> If you &quot;Follow&quot; a market, then you will see a banner notification whenever that market opens or closes.
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+        
+
+
+
+<br /><hr />
+<div id="divRecentActivityTab" class="DefaultActivityActiveTab">
+    <a onclick="Grinder.Index.showRecentActivity()">Recent Activity</a>
+</div>
+<div id="divRecentAddedTab" class="DefaultActivityInactiveTab">
+    <a onclick="Grinder.Index.showRecentlyAddedMarkets()">Recently Added Markets</a>
+</div>
+<div class="DefaultTabArea">
+    <div id="divRecentActivityTabArea">
+
+
+                <div><strong>Aug 1</strong></div>
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/18938">Wrath Month</a>
+                        (ranging from 83 to 88 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/18938"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+                <div><strong>Jul 31</strong></div>
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>Acceptance from <a href="/Market/Index/28">Abyss &amp; Apex - Fiction</a> (174 days)</span>
+
+                <a href="/Market/MarketRecentActivity/28"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+                    <em>(Congratulations Jacey Bedford!)</em>
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/28">Abyss &amp; Apex - Fiction</a>
+                        (177 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/28"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        5 Rejections from <a href="/Market/Index/192">Allegory - Fiction</a>
+                        (74 days each)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/192"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/10">Analog Science Fiction &amp; Fact - Fiction</a>
+                        (91 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/10"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/19587">Behind the Revolving Door, An Anthology of Choices</a>
+                        (73 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/19587"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/18940">Bona Books</a>
+                        (ranging from 63 to 90 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/18940"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        3 Rejections from <a href="/Market/Index/11">Clarkesworld Magazine - Fiction</a>
+                        (2 days each)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/11"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        9 Rejections from <a href="/Market/Index/3736">Diabolical Plots</a>
+                        (ranging from 20 to 22 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/3736"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        8 Rejections from <a href="/Market/Index/96">Drabblecast</a>
+                        (ranging from 123 to 143 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/96"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/6327">Factor Four Magazine</a>
+                        (ranging from 10 to 11 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/6327"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/11890">Flash Frog</a>
+                        (2 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/11890"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/10692">Fractured Literary</a>
+                        (24 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/10692"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/1206">Fusion Fragment</a>
+                        (11 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/1206"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/13169">Haven Spec Magazine - Fiction</a>
+                        (14 days each)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/13169"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/341">Indiana Review - Fiction</a>
+                        (ranging from 142 to 145 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/341"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/18">Interzone</a>
+                        (1 day)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/18"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/19405">Italiks - Fiction</a>
+                        (20 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/19405"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/3559">Maudlin House - Fiction</a>
+                        (17 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/3559"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/339">New Orleans Review (Print) - Fiction</a>
+                        (62 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/339"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/178">NewMyths.com - Fiction</a>
+                        (1 day)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/178"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/637">Not One of Us - Fiction</a>
+                        (13 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/637"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/15585">Old Moon - Poetry</a>
+                        (1 day)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/15585"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        3 Rejections from <a href="/Market/Index/14336">Old Moon - Fiction</a>
+                        (ranging from 2 to 23 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/14336"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/12124">Orion&#39;s Belt - Fiction</a>
+                        (22 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/12124"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/7882">Palette Poetry</a>
+                        (168 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/7882"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        3 Rejections from <a href="/Market/Index/15365">Pinhole Poetry</a>
+                        (43 days each)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/15365"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/58">PodCastle</a>
+                        (30 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/58"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>Acceptance from <a href="/Market/Index/1562">Shotgun Honey (Flash Fiction)</a> (150 days)</span>
+
+                <a href="/Market/MarketRecentActivity/1562"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+                    <em>(Congratulations Paul!)</em>
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        3 Rejections from <a href="/Market/Index/19396">Suffering the Other</a>
+                        (ranging from 73 to 102 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/19396"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/19441">Tableware - Fiction</a>
+                        (ranging from 92 to 98 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/19441"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/19760">The Big Book of Quantum Fiction - Fiction</a>
+                        (27 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/19760"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/12418">The Bridport Prize - Poetry</a>
+                        (ranging from 61 to 62 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/12418"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        4 Rejections from <a href="/Market/Index/3444">The Bridport Prize - Fiction</a>
+                        (ranging from 61 to 160 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/3444"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/12450">The Deadlands - Poetry</a>
+                        (89 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/12450"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        1 Rejection from <a href="/Market/Index/17155">The Malahat Review - Nonfiction</a>
+                        (126 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/17155"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/14089">The Pig&#39;s Back - Fiction</a>
+                        (ranging from 104 to 106 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/14089"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        3 Rejections from <a href="/Market/Index/15219">The Stygian Lepus - Fiction</a>
+                        (ranging from 7 to 21 days)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/15219"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+            <div class="DefaultActivityStatusItem">
+                    <span>Acceptance from <a href="/Market/Index/9826">The Sunlight Press - Poetry</a> (44 days)</span>
+
+                <a href="/Market/MarketRecentActivity/9826"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+                    <em>(Congratulations melissa ren!)</em>
+            </div>    
+            <div class="DefaultActivityStatusItemAlt">
+                    <span>
+                        2 Rejections from <a href="/Market/Index/9989">Utopia Science Fiction - Fiction</a>
+                        (15 days each)
+
+                    </span>
+
+                <a href="/Market/MarketRecentActivity/9989"><img src="/Images/Details Button.png" class="DetailsButton" /></a>
+
+                
+            </div>    
+    </div>
+    <div id="divRecentlyAddedMarketsTabArea">
+        <div class="MarketSearchListingNameHead">Market Name</div>
+        <div class="MarketSearchListingGenreHead">Genres</div>
+        <div class="MarketSearchListingLengthHead">Lengths</div>
+        <div class="MarketSearchListingPaymentHead">Pay</div>
+
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19980">
+                        Heavy Traffic
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Novelette" title="Novelette" src="/Images/Novelette.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Novella" title="Novella" src="/Images/Novella.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19986">
+                        Elastic Magazine
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Novelette" title="Novelette" src="/Images/Novelette.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Novella" title="Novella" src="/Images/Novella.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/20015">
+                        Trans Survivors Zine - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                            <span>$25/piece</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20014">
+                        Trans Survivors Zine - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPaymentAlt">
+                                    <span>$25/poem</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19978">
+                        Trans Survivors Zine - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                </div>
+                            <span>$25/piece</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20013">
+                        Paratextos - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPaymentAlt">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19974">
+                        Paratextos - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Novelette" title="Novelette" src="/Images/Novelette.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Novella" title="Novella" src="/Images/Novella.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20012">
+                        COOP: chickens of our poetry - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/20011">
+                        COOP: chickens of our poetry - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPayment">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19971">
+                        COOP: chickens of our poetry - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19969">
+                        Yay! all queer Anthology Series
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="Fantasy" title="Fantasy" src="/Images/Fantasy.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Mystery/Crime" title="Mystery/Crime" src="/Images/MysteryCrime.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Romance" title="Romance" src="/Images/Romance.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Science Fiction" title="Science Fiction" src="/Images/ScienceFiction.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                            <span>$10/piece</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20010">
+                        Trace Fossils Review - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/20009">
+                        Trace Fossils Review - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPayment">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19968">
+                        Trace Fossils Review - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/20008">
+                        StreetLit - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20007">
+                        StreetLit - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPaymentAlt">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19967">
+                        StreetLit - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19966">
+                        Dreams Divine
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="Fantasy" title="Fantasy" src="/Images/Fantasy.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Romance" title="Romance" src="/Images/Romance.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>8&#162;/word</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19965">
+                        Of Swords and Roses
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="Fantasy" title="Fantasy" src="/Images/Fantasy.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Romance" title="Romance" src="/Images/Romance.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>8&#162;/word</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20006">
+                        Spitball - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/20005">
+                        Spitball - Poetry
+                            <span>(fees)</span>
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPayment">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19959">
+                        Spitball - Fiction
+                            <span>(fees)</span>
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/20004">
+                        The Bleeding Margin - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20003">
+                        The Bleeding Margin - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="Horror" title="Horror" src="/Images/Horror.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Mystery/Crime" title="Mystery/Crime" src="/Images/MysteryCrime.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Suspense/Thriller" title="Suspense/Thriller" src="/Images/SuspenseThriller.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Literary" title="Literary" src="/Images/Literary.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPaymentAlt">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19950">
+                        The Bleeding Margin - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="Horror" title="Horror" src="/Images/Horror.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Mystery/Crime" title="Mystery/Crime" src="/Images/MysteryCrime.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Suspense/Thriller" title="Suspense/Thriller" src="/Images/SuspenseThriller.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Literary" title="Literary" src="/Images/Literary.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/20001">
+                        Bog Matter - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>2&#162;/word</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/20000">
+                        Bog Matter - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="Fantasy" title="Fantasy" src="/Images/Fantasy.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Horror" title="Horror" src="/Images/Horror.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Science Fiction" title="Science Fiction" src="/Images/ScienceFiction.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Humor" title="Humor" src="/Images/Humor.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPayment">
+                                    <span>$5/poem</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19945">
+                        Bog Matter - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="Fantasy" title="Fantasy" src="/Images/Fantasy.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Horror" title="Horror" src="/Images/Horror.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Science Fiction" title="Science Fiction" src="/Images/ScienceFiction.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Humor" title="Humor" src="/Images/Humor.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>2&#162;/word</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19998">
+                        The Dolomite Review - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19997">
+                        The Dolomite Review - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPaymentAlt">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19942">
+                        The Dolomite Review - Fiction
+                            <span>(fees)</span>
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19996">
+                        The Final Girl Review  - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19995">
+                        The Final Girl Review  - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="Horror" title="Horror" src="/Images/Horror.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPayment">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19940">
+                        The Final Girl Review  - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="Fantasy" title="Fantasy" src="/Images/Fantasy.png" style="border-width:0px;" />
+                            <img class="MarketSearchIcon" alt="Horror" title="Horror" src="/Images/Horror.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19939">
+                        Masque &amp; Spectacle - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19938">
+                        long con magazine - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                            <span>$14/piece</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19994">
+                        Union Spring - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19993">
+                        Union Spring Literary Review - Poetry
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Poetry" title="Poetry" src="/Images/Poetry.png" style="border-width:0px;" />
+                </div>
+                    <div class="MarketSearchListingPaymentAlt">
+                            <span>Non-Paying</span>
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingName">
+                    <a href="/Market/Index/19949">
+                        Union Spring Literary Review - Fiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenre">
+                            <img class="MarketSearchIcon" alt="General" title="General" src="/Images/General.png" style="border-width:0px;" />
+                </div>
+                <div class="MarketSearchListingLength">
+
+                        <img class="MarketSearchIcon" alt="Flash" title="Flash" src="/Images/Flash.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Short Story" title="Short Story" src="/Images/ShortStory.png" style="border-width:0px;" />
+                        <img class="MarketSearchIcon" alt="Novelette" title="Novelette" src="/Images/Novelette.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPayment">
+
+                    </div>
+
+            </div>
+            <div class="MarketSearchListingRow">
+                <div class="MarketSearchListingNameAlt">
+                    <a href="/Market/Index/19991">
+                        Arcanum Magazine - Nonfiction
+                    </a>
+
+                </div>
+                <div class="MarketSearchListingGenreAlt">
+                </div>
+                <div class="MarketSearchListingLengthAlt">
+
+                        <img class="MarketSearchIcon" alt="Nonfiction" title="Nonfiction" src="/Images/Nonfiction.png" style="border-width:0px;" />
+                </div>
+                                <span>Non-Paying</span>
+                    <div class="MarketSearchListingPaymentAlt">
+
+                    </div>
+
+            </div>
+    </div>
+</div>
+
+
+
+    </div>
+
+    <div id="FooterDiv" class="FooterDiv">
+        <hr />The Submission Grinder is brought to you by <a href="http://www.diabolicalplots.com" target="_blank">Diabolical Plots</a> (<a href="/Market/Stories?id=3736" target="_blank">Read Our Stories!</a>), science, our generous donors, people who send in suggestions to help keep listings up to date, and many others!<br />
+        Copyright &copy; 2022 Diabolical Plots, LLC, All Rights Reserved.
+    </div>
+
+    <div id="siteMessageWindow">
+        <div id="siteMessageBody" class="siteMessageBody"></div>
+    </div>
+
+    <input id="loadingText" name="loadingText" type="hidden" value="Dropping Eaves..." />
+
+    <script src="/bundles/jqueryval?v=3MVHJ5Ivy9V_KGyqK_RU8dmrpxzMGANBgebG-9CLNno1"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Grinder.Core.initializePage();
+        });
+
+
+        window.addEventListener('load', () => {
+            initNavBar();
+        }, false);
+
+        function ConfirmPending(submissionId) {
+
+            if (submissionId != null && submissionId != 0) {
+
+
+                $.ajax({
+                    url: "/home/ConfirmPending?SubmissionId=" + submissionId, success: function (result) {
+                        document.getElementById("oldPendingPanel").style.display = "none";
+                    }
+                });
+            }
+        }
+
+        function DismissEditorQueryReminder(submissionId) {
+            if (submissionId != null && submissionId != 0) {
+                $.ajax({
+                    url: "/home/DismissEditorQueryReminder?SubmissionId=" + submissionId, success: function (result) {
+                        document.getElementById("oldPendingPanel").style.display = "none";
+                    }
+                });
+            }
+        }
+
+        function clearAlerts() {
+            $.ajax({
+                url: "/account/profile/ClearAlerts", success: function (result) {
+                    document.getElementById("pnlAlertMessage").style.display = "none";
+                }
+            });
+        }
+
+        function dismissCustomAlert(reminderID) {
+            $.ajax({
+                url: "/account/reminders/DismissCustomAlert?reminderID=" + reminderID, success: function (result) {
+                    document.getElementById("pnlCustomAlert_" + reminderID).style.display = "none";
+                }
+            })
+        }
+
+    </script>
+
+    
+    <script>
+        $(document).ready(function () {
+            Grinder.Index.initializePage();
+        });
+    </script>
+
+</body>
+</html>
