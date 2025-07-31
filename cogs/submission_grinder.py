@@ -11,6 +11,7 @@ import discord
 import requests
 import json, os
 import asyncio
+import datetime
 from discord.ext import commands, tasks
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -48,8 +49,9 @@ class Submission_Grinder(commands.cog):
         # currently bot-spam for testing
         self.channel = channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
         self.html =  read_cached_html()
+        self.daily_grinder_update.start()
         
-    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(time=datetime.time(hour=13, minute=15, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_grinder_update(self):
         new_markets = parse_recently_added(self.html)
         
@@ -73,6 +75,10 @@ class Submission_Grinder(commands.cog):
         msg = await self.channel.send(content)
         with open(NEW_MARKETS_MESSAGE_FILE, "w") as f:
             json.dump({"message_id" : msg.id}, f)
+            
+    @daily_grinder_update.before_loop
+    async def before_daily_grinder_update(self):
+        await self.bot.wait_until_ready()
         
 async def setup(bot):
     await bot.add_cog(Submission_Grinder(bot))
