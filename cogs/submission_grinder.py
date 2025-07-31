@@ -113,7 +113,7 @@ class Submission_Grinder(commands.Cog):
             line = f"[**{name}**]({link}) — Genres: *{genres}*, Lengths: *{lengths}*, Pay: *{pay}*"
             formatted.append(line)
 
-        content = "**Recently Added Markets:**\n" + "\n".join(f"- {line}" for line in formatted)
+        content = "**Recently Added Markets:**\n" + "\n".join(f"-# - {line}" for line in formatted)
         
         self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
         if not self.channel:
