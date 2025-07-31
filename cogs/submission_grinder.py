@@ -24,6 +24,7 @@ NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.json"
 # Scrapes website.
 # DO NOT SPAM THIS.
 def fetch_website():
+    print("Scraping website.")
     response = requests.get(os.getenv("URL"))
     with open("data/cached_website.html", "w", encoding="utf-8") as f:
         f.write(response.text)
@@ -36,35 +37,45 @@ def read_cached_html():
 def parse_recently_added(html):
     soup = BeautifulSoup(html, "html.parser")
 
-    # Find the recently added markets section by id
-    table_section = soup.find("div", {"id": "recentmarkets"})
-    if not table_section:
-        print("Could not find #recentmarkets section.")
+    section = soup.find("div", id="divRecentlyAddedMarketsTabArea")
+    if not section:
+        print("Could not find Recently Added Markets section")
         return []
 
-    rows = table_section.find_all("tr")[1:]  # skip the header row
+    entries = []
+    rows = section.find_all("div", class_=lambda x: x and x.startswith("MarketSearchListingRow"))
 
-    markets = []
     for row in rows:
-        cols = row.find_all("td")
-        if len(cols) < 4:
-            continue
+        name_tag = row.find("div", class_=lambda x: x and "Name" in x)
+        name = name_tag.get_text(strip=True) if name_tag else "Unnamed"
+        link_tag = name_tag.find("a") if name_tag else None
+        link = "https://thegrinder.diabolicalplots.com" + link_tag["href"] if link_tag else ""
 
-        name = cols[0].get_text(strip=True)
-        pay = cols[3].get_text(strip=True)
+        genres = row.find("div", class_=lambda x: x and "Genre" in x)
+        genre_list = []
+        if genres:
+            icons = genres.find_all("img")
+            genre_list = [icon.get("alt") for icon in icons if icon.get("alt")]
 
-        # Optional: parse "type" from market name
-        market_type = ""
-        if " - " in name:
-            name, market_type = name.split(" - ", 1)
+        lengths = row.find("div", class_=lambda x: x and "Length" in x)
+        length_list = []
+        if lengths:
+            icons = lengths.find_all("img")
+            length_list = [icon.get("alt") for icon in icons if icon.get("alt")]
 
-        markets.append({
+        pay_tag = row.find("span")
+        pay = pay_tag.get_text(strip=True) if pay_tag else "Unspecified"
+
+        entries.append({
             "name": name,
-            "type": market_type or "Unspecified",
+            "link": link,
+            "genres": genre_list,
+            "lengths": length_list,
             "pay": pay
         })
 
-    return markets
+    return entries
+
 
 
 class Submission_Grinder(commands.Cog):
@@ -72,14 +83,16 @@ class Submission_Grinder(commands.Cog):
         self.bot = bot
         # currently bot-spam for testing
         self.channel = channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
-        self.html =  read_cached_html()
+        self.html =  None
         self.daily_grinder_update.start()
         
-    @tasks.loop(time=datetime.time(hour=14, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(time=datetime.time(hour=14, minute=37, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_grinder_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
         
+        # fetch_website()
+        self.html = read_cached_html()
         new_markets = parse_recently_added(self.html)
         if not new_markets:
             print("Failed to load new markets")
@@ -89,13 +102,16 @@ class Submission_Grinder(commands.Cog):
         formatted = []
         for market in new_markets:
             name = market["name"]
-            mtype = market["type"]
+            link = market["link"]
+            genres = ", ".join(market["genres"]) if market["genres"] else "Unspecified"
+            lengths = ", ".join(market["lengths"]) if market["lengths"] else "Unspecified"
             pay = market["pay"]
-            entry = f"**{name}** ({mtype}) — *{pay}*"
-            formatted.append(entry)
+
+            line = f"[**{name}**]({link}) — Genres: *{genres}*, Lengths: *{lengths}*, Pay: *{pay}*"
+            formatted.append(line)
 
         content = "**Recently Added Markets:**\n" + "\n".join(f"- {line}" for line in formatted)
-
+        
         # Try to update existing message if it exists
         if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
             with open(NEW_MARKETS_MESSAGE_FILE, "r") as f:
