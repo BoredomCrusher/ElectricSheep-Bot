@@ -7,16 +7,17 @@
 4.) for everything after the first post, update the post to include 
     new markets under its own section
 '''
-import discord
-import requests
-import json, os
-import asyncio
-import datetime
 from discord.ext import commands, tasks
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 load_dotenv()
 from bs4 import BeautifulSoup
+import discord
+import requests
+import json, os
+import asyncio
+import datetime
+import pytz
 
 NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.json"
 
@@ -52,6 +53,8 @@ class Submission_Grinder(commands.cog):
         
     @tasks.loop(time=datetime.time(hour=13, minute=40, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_grinder_update(self):
+        now = datetime.datetime.now(pytz.timezone("US/Pacific"))
+        print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
         new_markets = parse_recently_added(self.html)
         
         if not new_markets:

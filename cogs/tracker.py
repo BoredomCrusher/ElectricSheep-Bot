@@ -82,7 +82,7 @@ class Tracker(commands.Cog):
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
-        print(f"daily update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
+        print(f"daily tracker update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
         await self.bot.wait_until_ready()
         channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
         if not channel:
