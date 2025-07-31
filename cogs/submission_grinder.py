@@ -53,7 +53,7 @@ def parse_recently_added(html):
         name_tag = row.find("div", class_=lambda x: x and "Name" in x)
         name = name_tag.get_text(strip=True) if name_tag else "Unnamed"
         link_tag = name_tag.find("a") if name_tag else None
-        link = "https://thegrinder.diabolicalplots.com" + link_tag["href"] if link_tag else ""
+        link = os.getenv("URL") + link_tag["href"] if link_tag else ""
 
         genres = row.find("div", class_=lambda x: x and "Genre" in x)
         genre_list = []
