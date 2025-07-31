@@ -35,13 +35,37 @@ def read_cached_html():
     
 def parse_recently_added(html):
     soup = BeautifulSoup(html, "html.parser")
-    recently_added = soup.find("div", class_="market_section", string=lambda s: "Recently Added" in s)
-    
-    if recently_added:
-        market_list = recently_added.find_next_sibling("ul")
-        items = market_list.find_all("li")
-        return [item.get_text(strip=True) for item in items]
-    return []
+
+    # Find the recently added markets section by id
+    table_section = soup.find("div", {"id": "recentmarkets"})
+    if not table_section:
+        print("Could not find #recentmarkets section.")
+        return []
+
+    rows = table_section.find_all("tr")[1:]  # skip the header row
+
+    markets = []
+    for row in rows:
+        cols = row.find_all("td")
+        if len(cols) < 4:
+            continue
+
+        name = cols[0].get_text(strip=True)
+        pay = cols[3].get_text(strip=True)
+
+        # Optional: parse "type" from market name
+        market_type = ""
+        if " - " in name:
+            name, market_type = name.split(" - ", 1)
+
+        markets.append({
+            "name": name,
+            "type": market_type or "Unspecified",
+            "pay": pay
+        })
+
+    return markets
+
 
 class Submission_Grinder(commands.Cog):
     def __init__(self, bot):
@@ -55,28 +79,39 @@ class Submission_Grinder(commands.Cog):
     async def daily_grinder_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
-        new_markets = parse_recently_added(self.html)
         
+        new_markets = parse_recently_added(self.html)
         if not new_markets:
             print("Failed to load new markets")
             return
         
-        content = "**Recently Added Markets:**\n" + "\n".join(f"- {m}" for m in new_markets)
+         # Format markets for Discord
+        formatted = []
+        for market in new_markets:
+            name = market["name"]
+            mtype = market["type"]
+            pay = market["pay"]
+            entry = f"**{name}** ({mtype}) — *{pay}*"
+            formatted.append(entry)
 
+        content = "**Recently Added Markets:**\n" + "\n".join(f"- {line}" for line in formatted)
+
+        # Try to update existing message if it exists
         if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
             with open(NEW_MARKETS_MESSAGE_FILE, "r") as f:
                 data = json.load(f)
                 msg_id = data.get("message_id")
                 try:
                     msg = await self.channel.fetch_message(msg_id)
-                    await msg.edit(content=msg.content + "\n\n**New Markets:**\n" + "\n".join(f"- {m}" for m in new_markets))
+                    await msg.edit(content=msg.content + "\n\n**New Markets:**\n" + "\n".join(f"- {line}" for line in formatted))
+                    return  # Exit after updating existing message
                 except discord.NotFound:
                     print("New markets message not found.")
-                    pass
-        
+
+        # Otherwise, post a new message
         msg = await self.channel.send(content)
         with open(NEW_MARKETS_MESSAGE_FILE, "w") as f:
-            json.dump({"message_id" : msg.id}, f)
+            json.dump({"message_id": msg.id}, f)
             
     @daily_grinder_update.before_loop
     async def before_daily_grinder_update(self):
