@@ -75,7 +75,7 @@ class Submission_Grinder(commands.Cog):
         self.html =  read_cached_html()
         self.daily_grinder_update.start()
         
-    @tasks.loop(time=datetime.time(hour=13, minute=50, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(time=datetime.time(hour=14, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_grinder_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
