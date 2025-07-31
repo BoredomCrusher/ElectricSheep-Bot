@@ -86,7 +86,7 @@ class Submission_Grinder(commands.Cog):
         self.html =  None
         self.daily_grinder_update.start()
         
-    @tasks.loop(time=datetime.time(hour=14, minute=37, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(time=datetime.time(hour=14, minute=49, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_grinder_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
@@ -112,6 +112,7 @@ class Submission_Grinder(commands.Cog):
 
         content = "**Recently Added Markets:**\n" + "\n".join(f"- {line}" for line in formatted)
         
+        print(content)
         # Try to update existing message if it exists
         if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
             with open(NEW_MARKETS_MESSAGE_FILE, "r") as f:
