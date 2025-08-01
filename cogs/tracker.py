@@ -95,7 +95,7 @@ class Tracker(commands.Cog):
         meta = load_meta()
         
         PST = ZoneInfo("America/Los_Angeles")
-        today_str = datetime.now(PST).date().isoformat()
+        today_str = datetime.datetime.now(PST).date().isoformat()
         
         # Prevents duplicate penalty if already updated today.
         # Ironically, this might be redundant since it currently only posts at midnight.
