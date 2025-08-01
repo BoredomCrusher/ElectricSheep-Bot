@@ -134,22 +134,26 @@ class Submission_Grinder(commands.Cog):
                 chunks.append(chunk)
 
             for c in chunks:
+                print(f"printing chunk character size {len(c)}")
                 await self.channel.send(c)
         else:
             await self.channel.send(content)
+        
+        # currently causes an error
+            
         # Try to update existing message if it exists
-        if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
-            with open(NEW_MARKETS_MESSAGE_FILE, "r") as f:
-                data = json.load(f)
-                msg_id = data.get("message_id")
-                try:
-                    msg = await self.channel.fetch_message(msg_id)
-                    await msg.edit(content=msg.content + "\n\n**New Markets:**\n" + "\n".join(f"- {line}" for line in formatted))
-                    return  # Exit after updating existing message
-                except discord.NotFound:
-                    print("New markets message not found.")
-        else:
-            print(f"{NEW_MARKETS_MESSAGE_FILE} not found.")
+        # if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
+        #     with open(NEW_MARKETS_MESSAGE_FILE, "r") as f:
+        #         data = json.load(f)
+        #         msg_id = data.get("message_id")
+        #         try:
+        #             msg = await self.channel.fetch_message(msg_id)
+        #             await msg.edit(content=msg.content + "\n\n**New Markets:**\n" + "\n".join(f"- {line}" for line in formatted))
+        #             return  # Exit after updating existing message
+        #         except discord.NotFound:
+        #             print("New markets message not found.")
+        # else:
+        #     print(f"{NEW_MARKETS_MESSAGE_FILE} not found.")
 
         # Otherwise, post a new message
         # msg = await self.channel.send(content)
