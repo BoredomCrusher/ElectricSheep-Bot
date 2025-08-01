@@ -79,112 +79,118 @@ class Tracker(commands.Cog):
 
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
 
-    # @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
-    # async def daily_update(self):
-    #     now = datetime.datetime.now(pytz.timezone("US/Pacific"))
-    #     print(f"daily tracker update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
-    #     await self.bot.wait_until_ready()
-    #     channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
-    #     if not channel:
-    #         print("-------------------ERROR: tracker get_channel doesn't work lmao-------------------")
-    #         return
+    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    async def daily_update(self):
+        now = datetime.datetime.now(pytz.timezone("US/Pacific"))
+        print(f"daily tracker update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
+        await self.bot.wait_until_ready()
+        channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
+        if not channel:
+            print("-------------------ERROR: tracker get_channel doesn't work lmao-------------------")
+            return
         
-    #     guild = channel.guild
+        guild = channel.guild
         
-    #     data = load_data()
-    #     meta = load_meta()
+        data = load_data()
+        meta = load_meta()
         
-    #     PST = ZoneInfo("America/Los_Angeles")
-    #     today_str = datetime.datetime.now(PST).date().isoformat()
+        PST = ZoneInfo("America/Los_Angeles")
+        today_str = datetime.datetime.now(PST).date().isoformat()
         
-    #     # Prevents duplicate penalty if already updated today.
-    #     # Ironically, this might be redundant since it currently only posts at midnight.
-    #     if meta.get("last_updated_date") ==  today_str:
-    #         print("Daily update already performed today.")
-    #         return
+        # Prevents duplicate penalty if already updated today.
+        # Ironically, this might be redundant since it currently only posts at midnight.
+        if meta.get("last_updated_date") ==  today_str:
+            print("Daily update already performed today.")
+            return
         
-    #     # Penalizes users who didn’t react yesterday,
-    #     # max() is so scores don't go negative.
-    #     # Currently, the penalty is that their score is divided by two.
-    #     rip = self.bot.get_emoji(1398098610733842452)
-    #     for user_id in data:
-    #         if data[user_id]["read"] != 0 and user_id not in self.today_readers:
-    #             try:
-    #                 member = await guild.fetch_member(int(user_id))
-    #                 name = member.display_name
-    #             except Exception:
-    #                 name = f"<@{user_id}>"
-    #             await channel.send(f"{name}'s reading streak has been broken {rip}")
-    #             data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
-    #         if data[user_id]["write"] != 0 and user_id not in self.today_writers:
-    #             try:
-    #                 member = await guild.fetch_member(int(user_id))
-    #                 name = member.display_name
-    #             except Exception:
-    #                 name = f"<@{user_id}>"
-    #             await channel.send(f"{name}'s writing streak has been broken {rip}")
-    #             data[user_id]["write"] = max(0, math.floor(data[user_id]["write"] / 2))
+        # Penalizes users who didn’t react yesterday,
+        # max() is so scores don't go negative.
+        # Currently, the penalty is that their score is divided by two.
+        rip = self.bot.get_emoji(1398098610733842452)
+        for user_id in data:
+            if data[user_id]["read"] != 0 and user_id not in self.today_readers:
+                try:
+                    member = await guild.fetch_member(int(user_id))
+                    name = member.display_name
+                except Exception:
+                    name = f"<@{user_id}>"
+                await channel.send(f"{name}'s reading streak has been broken {rip}")
+                data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
+            if data[user_id]["write"] != 0 and user_id not in self.today_writers:
+                try:
+                    member = await guild.fetch_member(int(user_id))
+                    name = member.display_name
+                except Exception:
+                    name = f"<@{user_id}>"
+                await channel.send(f"{name}'s writing streak has been broken {rip}")
+                data[user_id]["write"] = max(0, math.floor(data[user_id]["write"] / 2))
 
-    #     save_data(data)
+        save_data(data)
         
-    #     self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-    #     self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         
         
-    #     # Leaderboard
-    #     # Sort by reading and writing streaks separately
-    #     sorted_by_read = sorted(data.items(), key=lambda item: item[1]['read'], reverse=True)
-    #     sorted_by_write = sorted(data.items(), key=lambda item: item[1]['write'], reverse=True)
+        # Leaderboard
+        # Sort by reading and writing streaks separately
+        sorted_by_read = sorted(data.items(), key=lambda item: item[1]['read'], reverse=True)
+        sorted_by_write = sorted(data.items(), key=lambda item: item[1]['write'], reverse=True)
 
-    #     read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
-    #     write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
+        read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
+        write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
 
-    #     for user_id, stats in sorted_by_read:
-    #         try:
-    #             member = await guild.fetch_member(int(user_id))
-    #             name = member.display_name
-    #         except Exception:
-    #             print(f"Member name not found for ID {user_id}")
-    #             name = f"<@{user_id}>"
-    #         read_lines.append(f"{name}: {stats['read']}")
+        for user_id, stats in sorted_by_read:
+            try:
+                member = await guild.fetch_member(int(user_id))
+                name = member.display_name
+            except Exception:
+                print(f"Member name not found for ID {user_id}")
+                name = f"<@{user_id}>"
+            read_lines.append(f"{name}: {stats['read']}")
 
-    #     for user_id, stats in sorted_by_write:
-    #         try:
-    #             member = await guild.fetch_member(int(user_id))
-    #             name = member.display_name
-    #         except Exception:
-    #             print(f"Member name not found for ID {user_id}")
-    #             name = f"<@{user_id}>"
-    #         write_lines.append(f"{name}: {stats['write']}")
+        for user_id, stats in sorted_by_write:
+            try:
+                member = await guild.fetch_member(int(user_id))
+                name = member.display_name
+            except Exception:
+                print(f"Member name not found for ID {user_id}")
+                name = f"<@{user_id}>"
+            write_lines.append(f"{name}: {stats['write']}")
 
-    #     # Send leaderboard as one message
-    #     await channel.send("\n".join(read_lines + ["", *write_lines]))
+        # Send leaderboard as one message
+        await channel.send("\n".join(read_lines + ["", *write_lines]))
 
-    #     # Resetting so it still displays the daily message.
-    #     self.today_readers = set()
-    #     self.today_writers = set()
+        # Resetting so it still displays the daily message.
+        self.today_readers = set()
+        self.today_writers = set()
         
-    #     today = datetime.date.today().strftime("%A, %B %d, %Y")
-    #     msg = await channel.send(
-    #         f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today."
-    #     )
-    #     await msg.add_reaction(str(self.reading_emoji))
-    #     await msg.add_reaction(str(self.writing_emoji))
+        today = datetime.date.today().strftime("%A, %B %d, %Y")
+        msg = await channel.send(
+            f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today."
+        )
+        await msg.add_reaction(str(self.reading_emoji))
+        await msg.add_reaction(str(self.writing_emoji))
 
-    #     self.tracker_message_id = msg.id
-    #     self.tracker_channel_id = channel.id
+        self.tracker_message_id = msg.id
+        self.tracker_channel_id = channel.id
         
-    #     meta["today's readers"] = list(self.today_readers)
-    #     meta["today's writers"] = list(self.today_writers)
-    #     meta["tracker_message_id"] = self.tracker_message_id
-    #     meta["tracker_channel_id"] = self.tracker_channel_id
-    #     meta["last_updated_date"] = today_str
+        meta["today's readers"] = list(self.today_readers)
+        meta["today's writers"] = list(self.today_writers)
+        meta["tracker_message_id"] = self.tracker_message_id
+        meta["tracker_channel_id"] = self.tracker_channel_id
+        meta["last_updated_date"] = today_str
         
-    #     save_meta(meta)
+        save_meta(meta)
         
-    # @daily_update.before_loop
-    # async def before_daily_update(self):
-    #     await self.bot.wait_until_ready()
+    @daily_update.before_loop
+    async def before_daily_update(self):
+        await self.bot.wait_until_ready()
+        
+    @commands.command(name="force_daily_tracker")
+    @commands.is_owner()  # Optional: only lets the bot owner use this
+    async def test_daily(self, ctx):
+        await ctx.send("Running daily update manually...")
+        await self.daily_update()
         
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def delete_old_messages(self):
@@ -208,6 +214,7 @@ class Tracker(commands.Cog):
     @delete_old_messages.before_loop
     async def before_delete_old_messages(self):
         await self.bot.wait_until_ready()
+
         
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
