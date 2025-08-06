@@ -44,6 +44,7 @@ class Tracker(commands.Cog):
         self.delete_old_messages.start()
         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        print(f"Tracker cog initialized with id {id(self)}")
         
         try:
             with open("data/meta.json", "r") as f:
@@ -61,7 +62,9 @@ class Tracker(commands.Cog):
 
         
     def cog_unload(self):
-        self.daily_update.cancel()
+        self.run_daily_update.cancel()
+        self.delete_old_messages.cancel()
+
         
     def format_progress(self, data, today_readers, today_writers):
         readers_text = []
@@ -83,6 +86,7 @@ class Tracker(commands.Cog):
 
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def run_daily_update(self):
+        print("RUN DAILY UPDATE — FROM LOOP")
         await self.daily_update()
         
     @run_daily_update.before_loop
@@ -194,8 +198,11 @@ class Tracker(commands.Cog):
     @commands.command(name="force_daily_tracker")
     @commands.is_owner()
     async def test_daily(self, ctx):
+        print(f"TEST COMMAND CALLED by {ctx.author} in {ctx.channel}")
         await ctx.send("Running daily update manually...")
+        print("RUN DAILY UPDATE — FROM COMMAND (before call)")
         await self.daily_update()
+        print("RUN DAILY UPDATE — FROM COMMAND (after call)")
         
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def delete_old_messages(self):

@@ -25,8 +25,6 @@ class Bot_Commands(commands.Cog):
                 await message.channel.send(f"{emoji}")
         if "just write" in message.content:
             await message.channel.send(f"it's that easy.")
-        
-        await self.bot.process_commands(message)
 
 async def setup(bot):
     await bot.add_cog(Bot_Commands(bot))

@@ -86,19 +86,33 @@ class Submission_Grinder(commands.Cog):
         # currently bot-spam for testing
         self.channel = None
         self.html =  None
-        self.daily_grinder_update.start()
+        self.send_daily_grinder_update.start()
+        self.daily_fetch_website.start()
         
+    # Runs every 24 hours to not scrape the website too often.
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
-    async def daily_grinder_update(self):
-        now = datetime.datetime.now(pytz.timezone("US/Pacific"))
-        print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
-        
-        # fetch_website()
+    async def daily_fetch_website(self):
         self.html = read_cached_html()
         new_markets = parse_recently_added(self.html)
         if not new_markets:
             print("Failed to load new markets")
             return
+        else:
+            print()
+        
+    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    async def send_daily_grinder_update(self):
+        await self.daily_grinder_update()
+    
+    @daily_fetch_website.before_loop
+    async def before_daily_fetch_website(self):
+        await self.bot.wait_until_ready()
+    
+    async def daily_grinder_update(self):
+        now = datetime.datetime.now(pytz.timezone("US/Pacific"))
+        print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
+        
+        new_markets = parse_recently_added(read_cached_html())
         
          # Format markets for Discord
         formatted = []
@@ -158,11 +172,11 @@ class Submission_Grinder(commands.Cog):
         # msg = await self.channel.send(content)
         #with open(NEW_MARKETS_MESSAGE_FILE, "w") as f:
          #   json.dump({"message_id": msg.id}, f)
-            
-    @daily_grinder_update.before_loop
+         
+    @send_daily_grinder_update.before_loop
     async def before_daily_grinder_update(self):
         await self.bot.wait_until_ready()
-
+        
     @commands.command(name="force_submission_grinder_update")
     @commands.is_owner()
     async def test_daily(self, ctx):
