@@ -40,7 +40,7 @@ class Tracker(commands.Cog):
         self.tracker_channel_id = None
         self.writing_emoji = None 
         self.reading_emoji = None
-        # self.daily_update.start()
+        self.run_daily_update.start()
         self.delete_old_messages.start()
         
         try:
