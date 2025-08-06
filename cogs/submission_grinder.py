@@ -95,10 +95,10 @@ class Submission_Grinder(commands.Cog):
         self.html = read_cached_html()
         new_markets = parse_recently_added(self.html)
         if not new_markets:
-            print("Failed to load new markets")
+            print("Failed to load new markets.")
             return
         else:
-            print()
+            print("New markets loaded.")
         
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def send_daily_grinder_update(self):
