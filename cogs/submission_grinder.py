@@ -88,8 +88,7 @@ class Submission_Grinder(commands.Cog):
         self.html =  None
         self.daily_grinder_update.start()
         
-    # @tasks.loop(time=datetime.time(hour=15, minute=30, tzinfo=ZoneInfo("America/Los_Angeles")))
-    @tasks.loop(hours=10000)
+    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_grinder_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
@@ -163,6 +162,12 @@ class Submission_Grinder(commands.Cog):
     @daily_grinder_update.before_loop
     async def before_daily_grinder_update(self):
         await self.bot.wait_until_ready()
+
+    @commands.command(name="force_submission_grinder_update")
+    @commands.is_owner()
+    async def test_daily(self, ctx):
+        await ctx.send("Running daily update manually...")
+        await self.daily_grinder_update()
         
 async def setup(bot):
     await bot.add_cog(Submission_Grinder(bot))

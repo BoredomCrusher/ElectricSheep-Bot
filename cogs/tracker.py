@@ -80,6 +80,13 @@ class Tracker(commands.Cog):
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
 
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    async def run_daily_update(self):
+        await self.daily_update()
+        
+    @run_daily_update.before_loop
+    async def before_daily_update(self):
+        await self.bot.wait_until_ready()
+
     async def daily_update(self):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily tracker update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
@@ -182,12 +189,8 @@ class Tracker(commands.Cog):
         
         save_meta(meta)
         
-    @daily_update.before_loop
-    async def before_daily_update(self):
-        await self.bot.wait_until_ready()
-        
     @commands.command(name="force_daily_tracker")
-    @commands.is_owner()  # Optional: only lets the bot owner use this
+    @commands.is_owner()
     async def test_daily(self, ctx):
         await ctx.send("Running daily update manually...")
         await self.daily_update()
