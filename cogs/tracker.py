@@ -42,6 +42,8 @@ class Tracker(commands.Cog):
         self.reading_emoji = None
         self.run_daily_update.start()
         self.delete_old_messages.start()
+        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         
         try:
             with open("data/meta.json", "r") as f:
@@ -134,8 +136,8 @@ class Tracker(commands.Cog):
 
         save_data(data)
         
-        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        # self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        # self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         
         
         # Leaderboard
@@ -217,10 +219,18 @@ class Tracker(commands.Cog):
     @delete_old_messages.before_loop
     async def before_delete_old_messages(self):
         await self.bot.wait_until_ready()
-
         
+    
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
+        await self.on_raw_reaction(payload, added=True)
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_remove(self, payload):
+        await self.on_raw_reaction(payload, added=False)
+        
+    @commands.Cog.listener()
+    async def on_raw_reaction(self, payload, added: bool):
         # Ignores bot's own reactions.
         if str(payload.user_id) == str(self.bot.user.id):
             return
@@ -231,8 +241,8 @@ class Tracker(commands.Cog):
         if payload.message_id != getattr(self, "tracker_message_id", None):
             return
         
-        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        # self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        # self.reading_emoji = self.bot.get_emoji(1397736959882956842)
 
         user_id = str(payload.user_id)
         emoji = payload.emoji.name
@@ -242,17 +252,29 @@ class Tracker(commands.Cog):
 
         updated = False
 
-        # emoji needs to be compared to the name of the cuustom emoji instead of self.bot.get_emoji()
-        if emoji == "frogReading" and user_id not in self.today_readers:
-            data[user_id]["read"] += 1
-            self.today_readers.add(user_id)
-            updated = True
+        if added:
+            # emoji needs to be compared to the name of the cuustom emoji instead of self.bot.get_emoji()
+            if emoji == "frogReading" and user_id not in self.today_readers:
+                data[user_id]["read"] += 1
+                self.today_readers.add(user_id)
+                updated = True
 
-        # emoji needs to be compared to the name of the cuustom emoji instead of self.bot.get_emoji()
-        elif emoji == "bulbaWriter" and user_id not in self.today_writers:
-            data[user_id]["write"] += 1
-            self.today_writers.add(user_id)
-            updated = True
+            elif emoji == "bulbaWriter" and user_id not in self.today_writers:
+                data[user_id]["write"] += 1
+                self.today_writers.add(user_id)
+                updated = True
+                
+        else:
+            print("Point removed.")
+            if emoji == "frogReading" and user_id in self.today_readers:
+                data[user_id]["read"] = max(0, data[user_id]["read"] - 1)
+                self.today_readers.remove(user_id)
+                updated = True
+
+            elif emoji == "bulbaWriter" and user_id in self.today_writers:
+                data[user_id]["write"] = max(0, data[user_id]["write"] - 1)
+                self.today_writers.remove(user_id)
+                updated = True
 
         if updated:
             save_data(data)
