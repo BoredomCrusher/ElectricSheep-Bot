@@ -111,7 +111,6 @@ class Tracker(commands.Cog):
         today_str = datetime.datetime.now(PST).date().isoformat()
         
         # Prevents duplicate penalty if already updated today.
-        # Ironically, this might be redundant since it currently only posts at midnight.
         if meta.get("last_updated_date") ==  today_str:
             print("Daily update already performed today.")
             return
@@ -140,8 +139,8 @@ class Tracker(commands.Cog):
 
         save_data(data)
         
-        # self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-        # self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         
         
         # Leaderboard
@@ -248,8 +247,8 @@ class Tracker(commands.Cog):
         if payload.message_id != getattr(self, "tracker_message_id", None):
             return
         
-        # self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-        # self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
 
         user_id = str(payload.user_id)
         emoji = payload.emoji.name
