@@ -8,7 +8,7 @@ class Bot_Commands(commands.Cog):
     async def on_message(self, message):
         if message.author == self.bot.user:
             return
-        if "/shrug" in message.content:
+        if "/shrug" in message.content.lower():
             await message.channel.send("¯\\_(ツ)_/¯")
         if "good bot" in message.content.lower():
             emoji = self.bot.get_emoji(1058902343539761274)
@@ -19,11 +19,11 @@ class Bot_Commands(commands.Cog):
             if emoji:
                 await message.channel.send(f"I am what I was made to be, blame my creator instead.")
                 await message.channel.send(f"{emoji}")
-        if "hell yeah" in message.content:
+        if "hell yeah" in message.content.lower():
             emoji = self.bot.get_emoji(1058884605752643654)
             if emoji:
                 await message.channel.send(f"{emoji}")
-        if "just write" in message.content:
+        if "just write" in message.content.lower():
             await message.channel.send(f"it's that easy.")
 
 async def setup(bot):

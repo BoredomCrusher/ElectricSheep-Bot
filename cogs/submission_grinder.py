@@ -19,7 +19,7 @@ import asyncio
 import datetime
 import pytz
 
-NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.json"
+NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.txt"
 
 # Scrapes website.
 # DO NOT SPAM THIS.
@@ -77,7 +77,7 @@ def parse_recently_added(html):
             "lengths": length_list,
             "pay": pay
         })
-
+    print("HTML parsed.")
     return entries
 
 class Submission_Grinder(commands.Cog):
@@ -92,6 +92,9 @@ class Submission_Grinder(commands.Cog):
     # Runs every 24 hours to not scrape the website too often.
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_fetch_website(self):
+        # regular daily scraping currently removed for testing while relying on /force_load_new_markets
+        fetch_website()
+        # The next two lines are probably redundant.
         self.html = read_cached_html()
         new_markets = parse_recently_added(self.html)
         if not new_markets:
@@ -114,7 +117,7 @@ class Submission_Grinder(commands.Cog):
         
         new_markets = parse_recently_added(read_cached_html())
         
-         # Format markets for Discord
+        # Format markets for Discord
         formatted = []
         for market in new_markets:
             name = market["name"]
@@ -126,18 +129,77 @@ class Submission_Grinder(commands.Cog):
             line = f"[**{name}**]({link}) — Genres: *{genres}*, Lengths: *{lengths}*, Pay: *{pay}*"
             formatted.append(line)
 
-        content = "**Recently Added Markets:**\n" + "\n".join(f"-# - {line}" for line in formatted)
+        content = "**Current Markets:**\n" + "\n".join(f"-# - {line}" for line in formatted)
+        content = content.splitlines()
         
         self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
         if not self.channel:
-            print("-------------------ERROR: scraper get_channel doesn't work lmao-------------------")
+            print("ERROR: scraper get_channel doesn't work.")
             return
-        if len(content) > 2000:
+        
+        print("attempting to open file")
+        if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
+            with open(NEW_MARKETS_MESSAGE_FILE, "r+") as f:
+                data = f.read()
+                f.seek(0)
+                
+                lines = data.splitlines()
+                
+                # Writes to file if empty.
+                if not lines:
+                    print("Message file empty, now writing to file.")
+                    for message in content:
+                        f.write(message)
+                    f.seek(0)
+                    lines = f.read().splitlines()
+                else:
+                    print("Message file not empty.")
+                    
+                expired_markets = []
+                # removes expired markets and appends their names to a string
+                for line in lines:
+                    if line not in content:
+                        expired_markets += line.split("**", 1)[1].split("**")[0] + ", "
+                        lines.remove(line)
+                if expired_markets:
+                    ''' 
+                    This doesn't cover for if there are so many expired markets 
+                    that it requires more than one discord message to send, 
+                    but that many markets expiring at the same time 
+                    with the website this code scrapes from is impossible 
+                    unless the code isn't working as intended.
+                    '''
+                    await self.channel.send("Expired markets: ".join(expired_markets) + ".")
+                else:
+                    print("No expired markets.")
+                
+                        
+                if "\n\n**Just Added Today:**\n" in lines:
+                    lines.remove("\n\n**Just Added Today:**\n")
+                lines.append("\n\n**Just Added Today:**\n")
+                
+                any_new_markets = False
+                
+                for message in content:
+                    if message not in lines:
+                        any_new_markets = True
+                        lines.append(message)
+                        
+                if not any_new_markets: 
+                    lines.append("None.")
+        else:
+            print("ERROR: message file not found.")
+            return
+        print("1")
+        content = lines
+        charcount = "".join(content)
+                        
+        if len(charcount) > 2000:
             print(f"⚠️ Message is too long ({len(content)} characters). Splitting...")
             # Split into chunks
             chunks = []
             chunk = ""
-            for line in content.split("\n"):
+            for line in content:
                 if len(chunk) + len(line) + 1 > 2000:
                     chunks.append(chunk)
                     chunk = line
@@ -150,28 +212,8 @@ class Submission_Grinder(commands.Cog):
                 print(f"printing chunk character size {len(c)}")
                 await self.channel.send(c)
         else:
-            await self.channel.send(content)
-        
-        # currently causes an error
+            await self.channel.send(charcount)
             
-        # Try to update existing message if it exists
-        # if os.path.exists(NEW_MARKETS_MESSAGE_FILE):
-        #     with open(NEW_MARKETS_MESSAGE_FILE, "r") as f:
-        #         data = json.load(f)
-        #         msg_id = data.get("message_id")
-        #         try:
-        #             msg = await self.channel.fetch_message(msg_id)
-        #             await msg.edit(content=msg.content + "\n\n**New Markets:**\n" + "\n".join(f"- {line}" for line in formatted))
-        #             return  # Exit after updating existing message
-        #         except discord.NotFound:
-        #             print("New markets message not found.")
-        # else:
-        #     print(f"{NEW_MARKETS_MESSAGE_FILE} not found.")
-
-        # Otherwise, post a new message
-        # msg = await self.channel.send(content)
-        #with open(NEW_MARKETS_MESSAGE_FILE, "w") as f:
-         #   json.dump({"message_id": msg.id}, f)
          
     @send_daily_grinder_update.before_loop
     async def before_daily_grinder_update(self):
@@ -179,9 +221,15 @@ class Submission_Grinder(commands.Cog):
         
     @commands.command(name="force_submission_grinder_update")
     @commands.is_owner()
-    async def test_daily(self, ctx):
+    async def test_update(self, ctx):
         await ctx.send("Running daily update manually...")
         await self.daily_grinder_update()
+        
+    @commands.command(name="force_load_new_markets")
+    @commands.is_owner()
+    async def test_load(self, ctx):
+        await ctx.send("Loading new markets...")
+        fetch_website()
         
 async def setup(bot):
     await bot.add_cog(Submission_Grinder(bot))

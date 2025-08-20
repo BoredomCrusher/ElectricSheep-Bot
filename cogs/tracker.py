@@ -44,7 +44,6 @@ class Tracker(commands.Cog):
         self.delete_old_messages.start()
         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
-        print(f"Tracker cog initialized with id {id(self)}")
         
         try:
             with open("data/meta.json", "r") as f:
