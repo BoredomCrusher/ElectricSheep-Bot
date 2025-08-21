@@ -164,11 +164,11 @@ class Submission_Grinder(commands.Cog):
                     if line not in content:
                         if "[**" in line:
                             expired_markets.append(line.split("**", 1)[1].split("**")[0])
-                        elif "Temp Closed" in line:
+                    else:
+                        if "Temp Closed" in line:
                             closed_markets.append(line)
                         else:
                             open_markets.append(line)
-                            
                 print("passed loop")
                 expired_markets.sort()
                 closed_markets.sort()
