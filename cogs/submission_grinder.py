@@ -118,7 +118,8 @@ class Submission_Grinder(commands.Cog):
         new_markets = parse_recently_added(read_cached_html())
         
         # Format markets for Discord
-        formatted = []
+        open_markets = []
+        temp_closed = []
         for market in new_markets:
             name = market["name"]
             link = market["link"]
@@ -127,9 +128,13 @@ class Submission_Grinder(commands.Cog):
             pay = market["pay"]
 
             line = f"[**{name}**]({link}) — Genres: *{genres}*, Lengths: *{lengths}*, Pay: *{pay}*"
-            formatted.append(line)
+            if "Temp Closed" not in name:
+                open_markets.append(line)
+            else:
+                temp_closed.append(line)
 
-        content = "**Current Markets:**\n" + "\n".join(f"-# - {line}" for line in formatted)
+        content = "**Temporarily Closed Markets:**\n" + "\n".join(f"-# - {line}" for line in temp_closed)
+        content += "**\n\nCurrent Markets:**\n" + "\n".join(f"-# - {line}" for line in open_markets)
         content = content.splitlines()
         
         self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
@@ -146,7 +151,9 @@ class Submission_Grinder(commands.Cog):
                 lines = data.splitlines()
                 
                 # Writes to file if empty.
+                file_was_empty = False
                 if not lines:
+                    file_was_empty = True
                     print("Message file empty, now writing to file.")
                     for message in content:
                         f.write(message)
@@ -156,12 +163,21 @@ class Submission_Grinder(commands.Cog):
                     print("Message file not empty.")
                     
                 expired_markets = []
+                new_lines = []
                 # removes expired markets and appends their names to a string
                 for line in lines:
                     if line not in content:
-                        expired_markets += line.split("**", 1)[1].split("**")[0] + ", "
-                        lines.remove(line)
-                if expired_markets:
+                        expired_markets.append(line.split("**", 1)[1].split("**")[0])
+                        print("Line removed: " + line)
+                    else:
+                        # Coded this instead of just removing the line from lines because I'd be
+                        # removing elements while iterating through the array, which could skip elements.
+                        new_lines.append(line)
+                lines = new_lines
+
+                if not expired_markets:
+                    print("No expired markets.")
+                else:
                     ''' 
                     This doesn't cover for if there are so many expired markets 
                     that it requires more than one discord message to send, 
@@ -169,10 +185,9 @@ class Submission_Grinder(commands.Cog):
                     with the website this code scrapes from is impossible 
                     unless the code isn't working as intended.
                     '''
-                    await self.channel.send("Expired markets: ".join(expired_markets) + ".")
-                else:
-                    print("No expired markets.")
-                
+                    print("Updating expired markets")
+
+                    await self.channel.send("**Expired markets:**\n" + ", ".join(expired_markets) + ".")
                         
                 if "\n\n**Just Added Today:**\n" in lines:
                     lines.remove("\n\n**Just Added Today:**\n")
@@ -187,10 +202,14 @@ class Submission_Grinder(commands.Cog):
                         
                 if not any_new_markets: 
                     lines.append("None.")
+
+                if not file_was_empty:
+                    for line in lines:
+                        f.write(lines)
         else:
             print("ERROR: message file not found.")
             return
-        print("1")
+        print("Attempting to print content.")
         content = lines
         charcount = "".join(content)
                         
