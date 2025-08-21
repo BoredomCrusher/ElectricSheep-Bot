@@ -147,7 +147,7 @@ class Submission_Grinder(commands.Cog):
             with open(NEW_MARKETS_MESSAGE_FILE, "r+") as f:
                 data = f.read()
                 f.seek(0)
-                
+                f.truncate()
                 lines = data.splitlines()
                 
                 # Writes to file if empty.
