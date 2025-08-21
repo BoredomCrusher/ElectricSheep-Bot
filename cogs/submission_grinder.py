@@ -170,6 +170,9 @@ class Submission_Grinder(commands.Cog):
                         else:
                             open_markets.append(line)
                 print("passed loop")
+                expired_markets.sort()
+                closed_markets.sort()
+                open_markets.sort()
                 lines = closed_markets + open_markets
 
                 if not expired_markets:
@@ -186,23 +189,20 @@ class Submission_Grinder(commands.Cog):
 
                     await self.channel.send("**Expired markets:**\n" + ", ".join(expired_markets) + ".")
                 
-                just_added = "\n**Just Added Today:**"
-                # if just_added in lines:
-                #     lines.remove(just_added)
-                # else:
-                #     print("'Just Added Today' not found.")
-                lines.append(just_added)
-                
+                just_added = ["\n**Just Added Today:**"]
                 any_new_markets = False
                 
                 for message in content:
                     if message not in lines:
                         print("just added: " + message)
                         any_new_markets = True
-                        lines.append(message)
+                        just_added.append(message)
                         
                 if not any_new_markets: 
-                    lines.append("None.")
+                    just_added.append("None.")
+
+                just_added.sort()
+                lines = lines + just_added
 
                 if not file_was_empty:
                     f.truncate()
