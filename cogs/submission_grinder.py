@@ -118,8 +118,7 @@ class Submission_Grinder(commands.Cog):
         new_markets = parse_recently_added(read_cached_html())
         
         # Format markets for Discord
-        open_markets = []
-        temp_closed = []
+        formatted = []
         for market in new_markets:
             name = market["name"]
             link = market["link"]
@@ -128,13 +127,9 @@ class Submission_Grinder(commands.Cog):
             pay = market["pay"]
 
             line = f"[**{name}**]({link}) — Genres: *{genres}*, Lengths: *{lengths}*, Pay: *{pay}*"
-            if "Temp Closed" not in name:
-                open_markets.append(line)
-            else:
-                temp_closed.append(line)
-
-        content = "**Temporarily Closed Markets:**\n" + "\n".join(f"-# - {line}" for line in temp_closed)
-        content += "**\n\nCurrent Markets:**\n" + "\n".join(f"-# - {line}" for line in open_markets)
+            formatted.append(line)
+           
+        content = ("\n".join(f"-# - {line}" for line in formatted))
         content = content.splitlines()
         
         self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
@@ -147,7 +142,6 @@ class Submission_Grinder(commands.Cog):
             with open(NEW_MARKETS_MESSAGE_FILE, "r+") as f:
                 data = f.read()
                 f.seek(0)
-                f.truncate()
                 lines = data.splitlines()
                 
                 # Writes to file if empty.
@@ -163,17 +157,20 @@ class Submission_Grinder(commands.Cog):
                     print("Message file not empty.")
                     
                 expired_markets = []
-                new_lines = []
+                closed_markets = ["\n\n**Temporarily Closed Markets:**\n"]
+                open_markets = ["\n\n**Current Markets:**\n"]
                 # removes expired markets and appends their names to a string
                 for line in lines:
                     if line not in content:
-                        expired_markets.append(line.split("**", 1)[1].split("**")[0])
-                        print("Line removed: " + line)
+                        if "[**" in line:
+                            expired_markets.append(line.split("**", 1)[1].split("**")[0])
                     else:
-                        # Coded this instead of just removing the line from lines because I'd be
-                        # removing elements while iterating through the array, which could skip elements.
-                        new_lines.append(line)
-                lines = new_lines
+                        if "Temp Closed" in line:
+                            closed_markets.append(line)
+                        else:
+                            open_markets.append(line)
+                print("passed loop")
+                lines = closed_markets + open_markets
 
                 if not expired_markets:
                     print("No expired markets.")
@@ -188,15 +185,19 @@ class Submission_Grinder(commands.Cog):
                     print("Updating expired markets")
 
                     await self.channel.send("**Expired markets:**\n" + ", ".join(expired_markets) + ".")
-                        
-                if "\n\n**Just Added Today:**\n" in lines:
-                    lines.remove("\n\n**Just Added Today:**\n")
-                lines.append("\n\n**Just Added Today:**\n")
+                
+                just_added = "\n**Just Added Today:**"
+                # if just_added in lines:
+                #     lines.remove(just_added)
+                # else:
+                #     print("'Just Added Today' not found.")
+                lines.append(just_added)
                 
                 any_new_markets = False
                 
                 for message in content:
                     if message not in lines:
+                        print("just added: " + message)
                         any_new_markets = True
                         lines.append(message)
                         
@@ -204,8 +205,10 @@ class Submission_Grinder(commands.Cog):
                     lines.append("None.")
 
                 if not file_was_empty:
+                    f.truncate()
+                    print("Writing new content to file.")
                     for line in lines:
-                        f.write(lines)
+                        f.write(line + "\n")
         else:
             print("ERROR: message file not found.")
             return
