@@ -20,6 +20,7 @@ import datetime
 import pytz
 
 NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.txt"
+CHANNEL = "SUBMISSION_GRINDER_CHANNEL_ID"
 
 # Scrapes website.
 # DO NOT SPAM THIS.
@@ -132,7 +133,7 @@ class Submission_Grinder(commands.Cog):
         content = ("\n".join(f"-# - {line}" for line in formatted))
         content = content.splitlines()
         
-        self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
+        self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
         if not self.channel:
             print("ERROR: scraper get_channel doesn't work.")
             return
