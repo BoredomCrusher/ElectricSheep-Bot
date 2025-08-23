@@ -92,7 +92,6 @@ class Submission_Grinder(commands.Cog):
     # Runs every 24 hours to not scrape the website too often.
     @tasks.loop(time=datetime.time(hour=23, minute=59, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_fetch_website(self):
-        # regular daily scraping currently removed for testing while relying on /force_load_new_markets
         fetch_website()
         # The next two lines are probably redundant.
         self.html = read_cached_html()
@@ -159,6 +158,8 @@ class Submission_Grinder(commands.Cog):
                 expired_markets = []
                 closed_markets = ["\n\n**Temporarily Closed Markets:**\n"]
                 open_markets = ["\n\n**Current Markets:**\n"]
+                non_paying = [["\nNon-Paying:\n"], ["\nNon_Paying:\n"]]
+                paying = [["\nPaying:\n"], ["\nPaying:\n"]]
                 # removes expired markets and appends their names to a string
                 for line in lines:
                     if line not in content:
@@ -166,13 +167,24 @@ class Submission_Grinder(commands.Cog):
                             expired_markets.append(line.split("**", 1)[1].split("**")[0])
                     else:
                         if "Temp Closed" in line:
-                            closed_markets.append(line)
+                            if "Non-Paying" in line:
+                                non_paying[0].append(line)
+                            else:
+                                paying[0].append(line)
                         else:
-                            open_markets.append(line)
+                            if "Non-Paying" in line:
+                                non_paying[1].append(line)
+                            else:
+                                paying[1].append(line)
                 print("passed loop")
                 expired_markets.sort()
-                closed_markets.sort()
-                open_markets.sort()
+                non_paying[0].sort()
+                non_paying[1].sort()
+                paying[0].sort()
+                paying[1].sort()
+                
+                closed_markets = closed_markets + non_paying[0] + paying[0]
+                open_markets = open_markets + non_paying[1] + paying[1]
                 lines = closed_markets + open_markets
 
                 if not expired_markets:
