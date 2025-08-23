@@ -10,6 +10,7 @@
 -# - [**REMAKE - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20064) — Genres: *General*, Lengths: *Flash, Novella, Short Story, Novelette*, Pay: *Non-Paying*
 -# - [**REMAKE - Nonfiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20095) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
 -# - [**REMAKE - Poetry- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20094) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
+-# - [**Tummy Ache - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20079) — Genres: *General*, Lengths: *Flash, Short Story, Novelette, Novella*, Pay: *Non-Paying*
 -# - [**Tummy Ache - Nonfiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20102) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
 -# - [**Tummy Ache - Poetry- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20101) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
 -# - [**Virginia Fantastic- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20078) — Genres: *Fantasy, Horror, Mystery/Crime, Romance, Science Fiction, Western*, Lengths: *Flash*, Pay: *$5/piece*
@@ -30,21 +31,21 @@
 -# - [**Middleground - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20112) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
 -# - [**Middleground - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20111) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
 -# - [**October Oddities Horror Microfiction Contest**](https://thegrinder.diabolicalplots.com//Market/Index/20076) — Genres: *General, Fantasy, Horror*, Lengths: *Flash*, Pay: *$5/piece*
+-# - [**Quest - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20129) — Genres: *General, Fantasy, Science Fiction*, Lengths: *Novella, Short Story, Novelette*, Pay: *$25/piece*
+-# - [**Quest - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20131) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *$25/piece*
+-# - [**Quest - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20130) — Genres: *General, Fantasy, Science Fiction*, Lengths: *Poetry*, Pay: *$12/poem*
+-# - [**Rattlecast Prompt Poems of the Month**](https://thegrinder.diabolicalplots.com//Market/Index/20118) — Genres: *General*, Lengths: *Novelette, Novella, Short Story, Flash*, Pay: *Non-Paying*
 -# - [**SKUMMEL  - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20077) — Genres: *Fantasy, Horror, Science Fiction*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
 -# - [**SKUMMEL  - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20100) — Genres: *Fantasy, Horror, Science Fiction*, Lengths: *Poetry*, Pay: *Non-Paying*
+-# - [**Shared Drafts Project - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20117) — Genres: *General*, Lengths: *Flash, Novella, Novelette, Short Story*, Pay: *Non-Paying*
 -# - [**Shared Drafts Project - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20123) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
 -# - [**Shared Drafts Project - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20122) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
 -# - [**The Carrier Bag Magazine - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20104) — Genres: *General*, Lengths: *Flash, Short Story*, Pay: *$10/piece*
 -# - [**The Carrier Bag Magazine - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20105) — Genres: *General*, Lengths: *Poetry*, Pay: *$10/poem*
+-# - [**The Hong Kong Review - Fiction(fees)**](https://thegrinder.diabolicalplots.com//Market/Index/20106) — Genres: *General*, Lengths: *Flash, Short Story, Novelette, Novel Excerpt, Novella*, Pay: *(fees)*
 -# - [**The Hong Kong Review - Nonfiction(fees)**](https://thegrinder.diabolicalplots.com//Market/Index/20110) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *(fees)*
 -# - [**The Hong Kong Review - Poetry(fees)**](https://thegrinder.diabolicalplots.com//Market/Index/20109) — Genres: *General*, Lengths: *Poetry*, Pay: *(fees)*
 -# - [**The Wrath-Bearing Tree - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20090) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
 
 **Just Added Today:**
--# - [**Quest - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20129) — Genres: *General, Fantasy, Science Fiction*, Lengths: *Novella, Short Story, Novelette*, Pay: *$25/piece*
--# - [**Quest - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20131) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *$25/piece*
--# - [**Quest - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20130) — Genres: *General, Fantasy, Science Fiction*, Lengths: *Poetry*, Pay: *$12/poem*
--# - [**Rattlecast Prompt Poems of the Month**](https://thegrinder.diabolicalplots.com//Market/Index/20118) — Genres: *General*, Lengths: *Novelette, Novella, Short Story, Flash*, Pay: *Non-Paying*
--# - [**Shared Drafts Project - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20117) — Genres: *General*, Lengths: *Flash, Novella, Novelette, Short Story*, Pay: *Non-Paying*
--# - [**The Hong Kong Review - Fiction(fees)**](https://thegrinder.diabolicalplots.com//Market/Index/20106) — Genres: *General*, Lengths: *Flash, Short Story, Novelette, Novel Excerpt, Novella*, Pay: *(fees)*
--# - [**Tummy Ache - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20079) — Genres: *General*, Lengths: *Flash, Short Story, Novelette, Novella*, Pay: *Non-Paying*
+None.
