@@ -26,7 +26,7 @@ class Bot_Commands(commands.Cog):
         if "just write" in message.content.lower():
             await message.channel.send(f"it's that easy.")
         if "trans rights" in message.content.lower():
-            emoji = self.bot.get_emoji(1408954485317042207)
+            emoji = self.bot.get_emoji(1408953964539416616)
             if emoji:
                 await message.channel.send(f"{emoji}")
             
