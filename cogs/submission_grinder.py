@@ -93,7 +93,6 @@ class Submission_Grinder(commands.Cog):
     # Runs every 24 hours to not scrape the website too often.
     @tasks.loop(time=datetime.time(hour=23, minute=59, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def daily_fetch_website(self):
-        # regular daily scraping currently removed for testing while relying on /force_load_new_markets
         fetch_website()
         # The next two lines are probably redundant.
         self.html = read_cached_html()
