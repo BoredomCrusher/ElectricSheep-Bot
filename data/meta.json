@@ -1,11 +1,9 @@
 {
-  "tracker_message_id": 1408707349064978559,
+  "tracker_message_id": 1409069739061416067,
   "tracker_channel_id": 1398075704045863035,
-  "last_updated_date": "2025-08-23",
-  "today's readers": [
-    "292642839995875328",
-    "371172347937423362",
-    "572888402173886466"
-  ],
-  "today's writers": []
+  "last_updated_date": "2025-08-24",
+  "today's readers": [],
+  "today's writers": [
+    "371172347937423362"
+  ]
 }
