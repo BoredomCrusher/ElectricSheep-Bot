@@ -214,13 +214,15 @@ class Submission_Grinder(commands.Cog):
                             non_paying.append(message)
                         else:
                             paying.append(message)
-                        
+            
                 if not any_new_markets: 
                     just_added.append("None.")
+                else:
+                    non_paying.sort()
+                    paying.sort()
+                    just_added = just_added + non_paying + paying
 
-                non_paying.sort()
-                paying.sort()
-                just_added = just_added + non_paying + paying
+                
                 lines = lines + just_added
 
                 if not file_was_empty:
