@@ -211,7 +211,7 @@ class Tracker(commands.Cog):
             now = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
             message_time = message.created_at.astimezone(ZoneInfo("America/Los_Angeles"))
             message_age = now - message_time
-            if message_age > MAX_AGE or ("Reading Streaks" in message and message_age >= 1):
+            if message_age > MAX_AGE or ("Reading Streaks" in message and message_age >= timedelta(1)):
                 try:
                     await message.delete()
                     print("old message deleted")
