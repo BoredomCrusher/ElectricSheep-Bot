@@ -205,13 +205,13 @@ class Tracker(commands.Cog):
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def delete_old_messages(self):
         channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
-        MAX_AGE = timedelta(days = 2)
+        MAX_AGE = timedelta(days = 3)
         
         async for message in channel.history(limit=100):
             now = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
             message_time = message.created_at.astimezone(ZoneInfo("America/Los_Angeles"))
             message_age = now - message_time
-            if message_age > MAX_AGE or (message_age >= 1 and "Reading Streaks" in message):
+            if message_age > MAX_AGE:
                 try:
                     await message.delete()
                     print("old message deleted")
