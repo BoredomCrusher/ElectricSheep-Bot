@@ -159,7 +159,7 @@ class Submission_Grinder(commands.Cog):
                 expired_markets = []
                 closed_markets = ["\n\n**Temporarily Closed Markets:**\n"]
                 open_markets = ["\n\n**Current Markets:**\n"]
-                non_paying = [["\nNon-Paying:\n"], ["\nNon-Paying:\n"]]
+                non_paying = [["\nNon-Paying:\n"], ["\nNon_Paying:\n"]]
                 paying = [["\nPaying:\n"], ["\nPaying:\n"]]
                 # removes expired markets and appends their names to a string
                 for line in lines:
@@ -179,9 +179,13 @@ class Submission_Grinder(commands.Cog):
                                 paying[1].append(line)
                 print("passed loop")
                 expired_markets.sort()
-                closed_markets = closed_markets + non_paying[0].sort() + paying[0].sort()
-                open_markets = open_markets + non_paying[1].sort() + paying[1].sort()
+                non_paying[0].sort()
+                non_paying[1].sort()
+                paying[0].sort()
+                paying[1].sort()
                 
+                closed_markets = closed_markets + non_paying[0] + paying[0]
+                open_markets = open_markets + non_paying[1] + paying[1]
                 lines = closed_markets + open_markets
 
                 if not expired_markets:
@@ -201,20 +205,16 @@ class Submission_Grinder(commands.Cog):
                 just_added = ["\n**Just Added Today:**"]
                 any_new_markets = False
                 
-                non_paying = ["\nNon-Paying:\n"]
-                paying = ["\nPaying:\n"]
                 for message in content:
                     if message not in lines:
+                        print("just added: " + message)
                         any_new_markets = True
-                        if "Non-Paying" in message:
-                            non_paying.append(message)
-                        else:
-                            paying.append(message)
+                        just_added.append(message)
                         
                 if not any_new_markets: 
                     just_added.append("None.")
 
-                just_added = non_paying.sort() + paying.sort()
+                just_added.sort()
                 lines = lines + just_added
 
                 if not file_was_empty:
