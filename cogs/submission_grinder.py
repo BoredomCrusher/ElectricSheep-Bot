@@ -180,6 +180,15 @@ class Submission_Grinder(commands.Cog):
                 print("passed loop")
                 expired_markets.sort()
                 non_paying[0].sort()
+<<<<<<< HEAD
+=======
+                non_paying[1].sort()
+                paying[0].sort()
+                paying[1].sort()
+                
+                closed_markets = closed_markets + non_paying[0] + paying[0]
+                open_markets = open_markets + non_paying[1] + paying[1]
+>>>>>>> 5f40d6ad1d70819aabeddcbab31c215bbc212162
                 paying[0].sort()
                 non_paying[1].sort()
                 paying[1].sort()
@@ -211,6 +220,11 @@ class Submission_Grinder(commands.Cog):
                     if message not in lines:
                         print("just added: " + message)
                         any_new_markets = True
+<<<<<<< HEAD
+=======
+                        just_added.append(message)
+                        
+>>>>>>> 5f40d6ad1d70819aabeddcbab31c215bbc212162
                         if "Non-Paying" in message:
                             non_paying.append(message)
                         else:
@@ -223,6 +237,11 @@ class Submission_Grinder(commands.Cog):
                     paying.sort()
                     just_added = just_added + non_paying + paying
 
+<<<<<<< HEAD
+=======
+                just_added.sort()
+                
+>>>>>>> 5f40d6ad1d70819aabeddcbab31c215bbc212162
                 lines = lines + just_added
 
                 if not file_was_empty:
