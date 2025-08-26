@@ -20,8 +20,8 @@ import datetime
 import pytz
 
 NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.txt"
-#CHANNEL = "SUBMISSION_GRINDER_CHANNEL_ID"
-CHANNEL = "CHANNEL_ID"
+CHANNEL = "SUBMISSION_GRINDER_CHANNEL_ID"
+# CHANNEL = "CHANNEL_ID"
 
 # Scrapes website.
 # DO NOT SPAM THIS.
