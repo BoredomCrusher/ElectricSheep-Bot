@@ -180,21 +180,12 @@ class Submission_Grinder(commands.Cog):
                 print("passed loop")
                 expired_markets.sort()
                 non_paying[0].sort()
-<<<<<<< HEAD
-                non_paying[1].sort()
-                paying[0].sort()
-                paying[1].sort()
-                
-                closed_markets = closed_markets + non_paying[0] + paying[0]
-                open_markets = open_markets + non_paying[1] + paying[1]
-=======
                 paying[0].sort()
                 non_paying[1].sort()
                 paying[1].sort()
                 closed_markets = closed_markets + non_paying[0] + paying[0]
                 open_markets = open_markets + non_paying[1] + paying[1]
 
->>>>>>> 10530ae86b0b90c98bb96b222e5bc6ba569e95a2
                 lines = closed_markets + open_markets
 
                 if not expired_markets:
@@ -212,22 +203,19 @@ class Submission_Grinder(commands.Cog):
                     await self.channel.send("**Expired markets:**\n" + ", ".join(expired_markets) + ".")
                 
                 just_added = ["\n**Just Added Today:**"]
+                non_paying = ["\nNon-Paying:\n"]
+                paying = ["\nPaying:\n"]
                 any_new_markets = False
                 
                 for message in content:
                     if message not in lines:
                         print("just added: " + message)
                         any_new_markets = True
-<<<<<<< HEAD
-                        just_added.append(message)
-                        
-=======
                         if "Non-Paying" in message:
                             non_paying.append(message)
                         else:
                             paying.append(message)
             
->>>>>>> 10530ae86b0b90c98bb96b222e5bc6ba569e95a2
                 if not any_new_markets: 
                     just_added.append("None.")
                 else:
@@ -235,11 +223,6 @@ class Submission_Grinder(commands.Cog):
                     paying.sort()
                     just_added = just_added + non_paying + paying
 
-<<<<<<< HEAD
-                just_added.sort()
-=======
-                
->>>>>>> 10530ae86b0b90c98bb96b222e5bc6ba569e95a2
                 lines = lines + just_added
 
                 if not file_was_empty:
