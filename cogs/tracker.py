@@ -202,7 +202,7 @@ class Tracker(commands.Cog):
         await self.daily_update()
         print("RUN DAILY UPDATE — FROM COMMAND (after call)")
         
-    @tasks.loop(time=datetime.time(hour=15, minute=12, tzinfo=ZoneInfo("America/Los_Angeles")))
+    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def delete_old_messages(self):
         channel = self.bot.get_channel(int(os.getenv("TRACKER_CHANNEL_ID")))
         MAX_AGE = timedelta(days = 3)
