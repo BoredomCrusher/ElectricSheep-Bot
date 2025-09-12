@@ -10,8 +10,8 @@
 # import pytz
 # import math
 
-# DATA_FILE = "data/tracker.json"
-# META_FILE = "data/meta.json"
+# DATA_FILE = "data/new_tracker.json"
+# META_FILE = "data/new_meta.json"
 # CHANNEL = "CHANNEL_ID"
 
 # def load_data():
@@ -34,7 +34,7 @@
 #     with open(META_FILE, "w") as f:
 #         json.dump(meta, f, indent=2)
 
-# class Tracker(commands.Cog):
+# class New_Tracker(commands.Cog):
 #     def __init__(self, bot):
 #         self.bot = bot
 #         self.tracker_message_id = None
@@ -47,16 +47,19 @@
 #         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         
 #         try:
-#             with open("data/meta.json", "r") as f:
+#             with open(META_FILE, "r") as f:
 #                 meta = json.load(f)
-#                 self.tracker_message_id = meta.get("tracker_message_id")
 #                 self.tracker_channel_id = meta.get("tracker_channel_id")
 
 #                 # Daily writers and readers are no longer local,
 #                 # saving them in meta.json instead means they aren't reset
 #                 # if the bot crashses or is intentionally rebooted.
-#                 self.today_readers = set(meta.get("today's readers", [])) # strings
-#                 self.today_writers = set(meta.get("today's writers", [])) # strings
+#                 self.today_readers = set(meta.get("today's readers", []))
+#                 self.yesterday_readers = set(meta.get("yesterday's readers", []))
+#                 self.two_days_ago_readers = set(meta.get("two days ago's readers", []))
+#                 self.today_writers = set(meta.get("today's writers", []))
+#                 self.yesterday_writers = set(meta.get("yesterday's writers", []))
+#                 self.two_days_ago_writers = set(meta.get("two days ago's writers", []))
 #         except FileNotFoundError:
 #             pass
 
@@ -64,7 +67,6 @@
 #     def cog_unload(self):
 #         self.run_daily_update.cancel()
 #         self.delete_old_messages.cancel()
-
         
 #     def format_progress(self, data, today_readers, today_writers):
 #         readers_text = []
@@ -115,27 +117,29 @@
 #             print("Daily update already performed today.")
 #             return
         
-#         # Penalizes users who didn’t react yesterday,
-#         # max() is so scores don't go negative.
+#         # Updates scores
 #         # Currently, the penalty is that their score is divided by two.
-#         rip = self.bot.get_emoji(1398098610733842452)
 #         for user_id in data:
-#             if data[user_id]["read"] != 0 and user_id not in self.today_readers:
-#                 try:
-#                     member = await guild.fetch_member(int(user_id))
-#                     name = member.display_name
-#                 except Exception:
-#                     name = f"<@{user_id}>"
-#                 await channel.send(f"{name}'s reading streak has been broken {rip}")
+#             if user_id not in meta["two days ago's readers"]:
 #                 data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
-#             if data[user_id]["write"] != 0 and user_id not in self.today_writers:
-#                 try:
-#                     member = await guild.fetch_member(int(user_id))
-#                     name = member.display_name
-#                 except Exception:
-#                     name = f"<@{user_id}>"
-#                 await channel.send(f"{name}'s writing streak has been broken {rip}")
+#             else:
+#                 data[user_id]["read"] += 1
+#             if user_id not in meta["two days ago's writers"]:
 #                 data[user_id]["write"] = max(0, math.floor(data[user_id]["write"] / 2))
+#             else:
+#                 data[user_id]["write"] += 1
+                
+#         # updating for retroactive points
+#         meta["two days ago's readers"] = meta["yesterday's readers"] 
+#         meta["two days ago's writers"] = meta["yesterday's writers"] 
+#         meta["yesterday's readers"] = meta["today's readers"]
+#         meta["yesterday's writers"] = meta["today's writers"]
+#         self.today_readers = set()
+#         self.today_writers = set()
+#         meta["today's readers"] = list(self.today_readers)
+#         meta["today's writers"] = list(self.today_writers)
+        
+        
 
 #         save_data(data)
         
@@ -173,9 +177,6 @@
 #         await channel.send("\n".join(read_lines + ["", *write_lines]))
 
 #         # Resetting so it still displays the daily message.
-#         self.today_readers = set()
-#         self.today_writers = set()
-        
 #         today = datetime.date.today().strftime("%A, %B %d, %Y")
 #         msg = await channel.send(
 #             f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today."
@@ -186,8 +187,6 @@
 #         self.tracker_message_id = msg.id
 #         self.tracker_channel_id = channel.id
         
-#         meta["today's readers"] = list(self.today_readers)
-#         meta["today's writers"] = list(self.today_writers)
 #         meta["tracker_message_id"] = self.tracker_message_id
 #         meta["tracker_channel_id"] = self.tracker_channel_id
 #         meta["last_updated_date"] = today_str
@@ -206,7 +205,7 @@
 #     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
 #     async def delete_old_messages(self):
 #         channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
-#         MAX_AGE = timedelta(days = 3)
+#         MAX_AGE = timedelta(days = 2)
         
 #         async for message in channel.history(limit=100):
 #             now = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
@@ -225,8 +224,18 @@
 #     @delete_old_messages.before_loop
 #     async def before_delete_old_messages(self):
 #         await self.bot.wait_until_ready()
-        
     
+
+#     def calculate_score(current_score: int, today: bool, yesterday: bool, two_days_ago: bool):
+#         days = [today, yesterday, two_days_ago]
+#         score = current_score
+#         for wrote in days:
+#             if wrote:
+#                 score += 1
+#             else:
+#                 score /= 2
+#         return score
+        
 #     @commands.Cog.listener()
 #     async def on_raw_reaction_add(self, payload):
 #         await self.on_raw_reaction(payload, added=True)
@@ -244,7 +253,8 @@
 #         # Makes sure it's reacting to today's tracker message.
 #         # Print statement for error handling intentionally removed because
 #         # it was spamming the terminal.
-#         if payload.message_id != getattr(self, "tracker_message_id", None):
+#         # changed to checking channel id instead of tracker message id for multiple messages
+#         if payload.channel_id != getattr(self, "tracker_channel_id", None):
 #             return
         
 #         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
@@ -253,37 +263,69 @@
 #         user_id = str(payload.user_id)
 #         emoji = payload.emoji.name
 
+#         updated = False
+#         channel = self.bot.get_channel(self.tracker_channel_id)
+        
+#         now = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
+#         message = channel.fetch_message(payload.message_id)
+#         message_time = message.created_at.astimezone(ZoneInfo("America/Los_Angeles"))
+#         message_age = now - message_time
+        
+#         day = ""
+#         if message_age > timedelta(days = 2):
+#             day = "two days ago's"
+#         elif message_age > timedelta(days = 1):
+#             day = "yesterday's"
+#         else:
+#             day = "today's"
+        
+#         meta = load_meta()
 #         data = load_data()
 #         data.setdefault(user_id, {"read": 0, "write": 0})
-
-#         updated = False
-
+        
+#         current_reading_score = 0
+#         current_writing_score = 0
+        
 #         if added:
-#             # emoji needs to be compared to the name of the cuustom emoji instead of self.bot.get_emoji()
-#             if emoji == "frogReading" and user_id not in self.today_readers:
-#                 data[user_id]["read"] += 1
-#                 self.today_readers.add(user_id)
+#             if emoji == "frogReading" and user_id not in meta[day + " readers"]:
+#                 meta[day + "readers"].add(user_id)
+#                 save_meta(meta)
+#                 current_reading_score = self.calculate_score(data[user_id]["read"], 
+#                                                              meta["today's readers"], meta["yesterday's readers"], 
+#                                                              meta["two days ago's readers"])
 #                 updated = True
-
-#             elif emoji == "bulbaWriter" and user_id not in self.today_writers:
-#                 data[user_id]["write"] += 1
-#                 self.today_writers.add(user_id)
+                
+#             elif emoji == "bulbaWriter" and user_id not in meta[day + " writers"]:
+#                 meta[day + "writers"].add(user_id)
+#                 save_meta(meta)
+#                 current_writing_score = self.calculate_score(data[user_id]["write"], 
+#                                                               meta["today's writers"], meta["yesterday's writers"], 
+#                                                              meta["two days ago's writers"])
 #                 updated = True
                 
 #         else:
-#             print("Point removed.")
-#             if emoji == "frogReading" and user_id in self.today_readers:
-#                 data[user_id]["read"] = max(0, data[user_id]["read"] - 1)
-#                 self.today_readers.remove(user_id)
+#             if emoji == "frogReading" and user_id not in meta[day + " readers"]:
+#                 meta[day + "readers"].remove(user_id)
+#                 save_meta(meta)
+#                 current_reading_score = self.calculate_score(data[user_id]["read"], 
+#                                                              meta["today's readers"], meta["yesterday's readers"], 
+#                                                              meta["two days ago's readers"])
+#                 updated = True
+                
+#             elif emoji == "bulbaWriter" and user_id not in meta[day + " writers"]:
+#                 meta[day + "writers"].remove(user_id)
+#                 save_meta(meta)
+#                 current_writing_score = self.calculate_score(data[user_id]["write"], 
+#                                                               meta["today's writers"], meta["yesterday's writers"], 
+#                                                              meta["two days ago's writers"])
 #                 updated = True
 
-#             elif emoji == "bulbaWriter" and user_id in self.today_writers:
-#                 data[user_id]["write"] = max(0, data[user_id]["write"] - 1)
-#                 self.today_writers.remove(user_id)
-#                 updated = True
-
+#         # note to self: the current writing and reading score is good for display purposes, but also
+#         #               you're displaying directly from the file with your current setup, which isn't good.
+#         #               my first thought is just to store the current scores in a different file,
+#         #               but that's so lazy that it seems pointless to do for this.
+        
 #         if updated:
-#             save_data(data)
 
 #             meta = load_meta()
 #             meta["today's readers"] = list(self.today_readers)
@@ -303,7 +345,6 @@
 #             )
 
 #             # Edit the original message.
-#             channel = self.bot.get_channel(self.tracker_channel_id)
 #             try:
 #                 msg = await channel.fetch_message(self.tracker_message_id)
 #                 print("updating message:", self.tracker_message_id, self.tracker_channel_id)
@@ -312,4 +353,4 @@
 #                 print(f"Couldn't edit tracker message: {e}")
     
 # async def setup(bot):
-#     await bot.add_cog(Tracker(bot))
+#     await bot.add_cog(New_Tracker(bot))
