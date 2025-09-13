@@ -86,7 +86,8 @@
 
 #         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
 
-#     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+#     # @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
+#     @tasks.loop(seconds = 15)
 #     async def run_daily_update(self):
 #         print("RUN DAILY UPDATE — FROM LOOP")
 #         await self.daily_update()
@@ -138,8 +139,6 @@
 #         self.today_writers = set()
 #         meta["today's readers"] = list(self.today_readers)
 #         meta["today's writers"] = list(self.today_writers)
-        
-        
 
 #         save_data(data)
         
@@ -193,14 +192,14 @@
         
 #         save_meta(meta)
         
-#     @commands.command(name="force_daily_tracker")
-#     @commands.is_owner()
-#     async def test_daily(self, ctx):
-#         print(f"TEST COMMAND CALLED by {ctx.author} in {ctx.channel}")
-#         await ctx.send("Running daily update manually...")
-#         print("RUN DAILY UPDATE — FROM COMMAND (before call)")
-#         await self.daily_update()
-#         print("RUN DAILY UPDATE — FROM COMMAND (after call)")
+#     # @commands.command(name="force_daily_tracker")
+#     # @commands.is_owner()
+#     # async def test_daily(self, ctx):
+#     #     print(f"TEST COMMAND CALLED by {ctx.author} in {ctx.channel}")
+#     #     await ctx.send("Running daily update manually...")
+#     #     print("RUN DAILY UPDATE — FROM COMMAND (before call)")
+#     #     await self.daily_update()
+#     #     print("RUN DAILY UPDATE — FROM COMMAND (after call)")
         
 #     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
 #     async def delete_old_messages(self):
@@ -283,58 +282,37 @@
 #         data = load_data()
 #         data.setdefault(user_id, {"read": 0, "write": 0})
         
-#         current_reading_score = 0
-#         current_writing_score = 0
-        
 #         if added:
 #             if emoji == "frogReading" and user_id not in meta[day + " readers"]:
 #                 meta[day + "readers"].add(user_id)
 #                 save_meta(meta)
-#                 current_reading_score = self.calculate_score(data[user_id]["read"], 
-#                                                              meta["today's readers"], meta["yesterday's readers"], 
-#                                                              meta["two days ago's readers"])
 #                 updated = True
                 
 #             elif emoji == "bulbaWriter" and user_id not in meta[day + " writers"]:
 #                 meta[day + "writers"].add(user_id)
 #                 save_meta(meta)
-#                 current_writing_score = self.calculate_score(data[user_id]["write"], 
-#                                                               meta["today's writers"], meta["yesterday's writers"], 
-#                                                              meta["two days ago's writers"])
 #                 updated = True
                 
 #         else:
 #             if emoji == "frogReading" and user_id not in meta[day + " readers"]:
 #                 meta[day + "readers"].remove(user_id)
 #                 save_meta(meta)
-#                 current_reading_score = self.calculate_score(data[user_id]["read"], 
-#                                                              meta["today's readers"], meta["yesterday's readers"], 
-#                                                              meta["two days ago's readers"])
 #                 updated = True
                 
 #             elif emoji == "bulbaWriter" and user_id not in meta[day + " writers"]:
 #                 meta[day + "writers"].remove(user_id)
 #                 save_meta(meta)
-#                 current_writing_score = self.calculate_score(data[user_id]["write"], 
-#                                                               meta["today's writers"], meta["yesterday's writers"], 
-#                                                              meta["two days ago's writers"])
 #                 updated = True
-
-#         # note to self: the current writing and reading score is good for display purposes, but also
-#         #               you're displaying directly from the file with your current setup, which isn't good.
-#         #               my first thought is just to store the current scores in a different file,
-#         #               but that's so lazy that it seems pointless to do for this.
+                
+#         for id in data:
+#             id["read"] = self.calculate_score(id["read"], meta["today's readers"], meta["yesterday's readers"], meta["two days ago's readers"])
+#             id["write"] = self.calculate_score(id["write"], meta["today's writers"], meta["yesterday's writers"], meta["two days ago's writers"])
         
 #         if updated:
 
-#             meta = load_meta()
-#             meta["today's readers"] = list(self.today_readers)
-#             meta["today's writers"] = list(self.today_writers)
-#             save_meta(meta)
-
 #             # Regenerate the message content.
 #             readers_text, writers_text = self.format_progress(
-#                 data, self.today_readers, self.today_writers
+#                 data, meta["today's readers"], meta["today's writers"] 
 #             )
 
 #             today = datetime.date.today().strftime("%A, %B %d, %Y")
@@ -346,9 +324,8 @@
 
 #             # Edit the original message.
 #             try:
-#                 msg = await channel.fetch_message(self.tracker_message_id)
-#                 print("updating message:", self.tracker_message_id, self.tracker_channel_id)
-#                 await msg.edit(content=new_content)
+#                 print("updating message:", payload.message_id, self.tracker_channel_id)
+#                 await message.edit(content=new_content)
 #             except Exception as e:
 #                 print(f"Couldn't edit tracker message: {e}")
     
