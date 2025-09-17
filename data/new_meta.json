@@ -1,11 +1,22 @@
 {
-  "tracker_message_id": 1416215260981100664,
+  "tracker_message_ids": [
+    1417967628022059160,
+    1417967732334526685,
+    1417967837632528537
+  ],
+  "tracker_leaderboard_id" : 0,
   "tracker_channel_id": 1396960304247603210,
-  "last_updated_date": "2025-09-12",
+  "last_updated_date": "2025-09-17",
   "today's readers": [],
   "yesterday's readers": [],
-  "two days ago's readers": [],
+  "two days ago's readers": [
+    "371172347937423362"
+  ],
   "today's writers": [],
-  "yesterday's writers": [],
-  "two days ago's writers": []
+  "yesterday's writers": [
+    "371172347937423362"
+  ],
+  "two days ago's writers": [
+    "371172347937423362"
+  ]
 }
