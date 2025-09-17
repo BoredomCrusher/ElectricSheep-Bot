@@ -12,7 +12,6 @@
 
 # DATA_FILE = "data/new_tracker.json"
 # META_FILE = "data/new_meta.json"
-# CHANNEL = "CHANNEL_ID"
 
 # def load_data():
 #     if not os.path.exists(DATA_FILE):
@@ -39,19 +38,15 @@
 #         self.bot = bot
 #         self.tracker_message_ids = None
 #         self.leaderboard_message_id = None
-#         self.tracker_channel_id = None
-#         self.writing_emoji = None 
+#         self.channel = None
+#         self.guild = None
+#         self.writing_emoji = None
 #         self.reading_emoji = None
-#         self.run_daily_update.start()
-#         self.delete_old_messages.start()
-#         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-#         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         
 #         try:
 #             with open(META_FILE, "r") as f:
 #                 meta = json.load(f)
 #                 self.tracker_message_ids = meta.get("tracker_message_ids")
-#                 self.tracker_channel_id = meta.get("tracker_channel_id")
 
 #                 # Daily writers and readers are no longer local,
 #                 # saving them in meta.json instead means they aren't reset
@@ -65,6 +60,11 @@
 #         except FileNotFoundError:
 #             pass
 
+#     async def cog_load(self):
+#         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+#         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+#         self.run_daily_update.start()
+#         self.delete_old_messages.start()
         
 #     def cog_unload(self):
 #         self.run_daily_update.cancel()
@@ -87,9 +87,19 @@
 #             writers_text.append(f"{name}: {stats['write']}")
 
 #         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
+    
+#     def calculate_score(self, current_score: int, id: int, today: bool, yesterday: bool, two_days_ago: bool):
+#         days = [id in today, id in yesterday, id in two_days_ago]
+#         score = current_score
+#         for wrote in days:
+#             if wrote:
+#                 score += 1
+#             else:
+#                 score = math.floor(score / 2)
+#         return score
 
 #     # @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
-#     @tasks.loop(seconds = 25)
+#     @tasks.loop(seconds = 35)
 #     async def run_daily_update(self):
 #         print("RUN DAILY UPDATE — FROM LOOP")
 #         await self.daily_update()
@@ -102,12 +112,8 @@
 #         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
 #         print(f"daily tracker update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
 #         await self.bot.wait_until_ready()
-#         channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
-#         if not channel:
-#             print("-------------------ERROR: tracker get_channel doesn't work lmao-------------------")
-#             return
-        
-#         guild = channel.guild
+#         self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
+#         self.guild = self.channel.guild
         
 #         data = load_data()
 #         meta = load_meta()
@@ -125,12 +131,10 @@
 #         # Currently, the penalty is that their score is divided by two.
 #         for user_id in data:
 #             if user_id not in set(meta["two days ago's readers"]):
-#                 print(f"{user_id}'s main reading score penalized")
 #                 data[user_id]["read"] = max(0, math.floor(data[user_id]["read"] / 2))
 #             else:
 #                 data[user_id]["read"] += 1
 #             if user_id not in set(meta["two days ago's writers"]):
-#                 print(f"{user_id}'s main writing score penalized")
 #                 data[user_id]["write"] = max(0, math.floor(data[user_id]["write"] / 2))
 #             else:
 #                 data[user_id]["write"] += 1
@@ -153,8 +157,8 @@
 #         shallow_copy = data.copy()
         
 #         for id, stats in shallow_copy.items():
-#             stats["read"] = self.calculate_score(stats["read"], meta["today's readers"], meta["yesterday's readers"], meta["two days ago's readers"])
-#             stats["write"] = self.calculate_score(stats["write"], meta["today's writers"], meta["yesterday's writers"], meta["two days ago's writers"])
+#             stats["read"] = self.calculate_score(stats["read"], id, meta["today's readers"], meta["yesterday's readers"], meta["two days ago's readers"])
+#             stats["write"] = self.calculate_score(stats["write"], id, meta["today's writers"], meta["yesterday's writers"], meta["two days ago's writers"])
         
 #         # Leaderboard
 #         # Sort by reading and writing streaks separately
@@ -166,7 +170,7 @@
 
 #         for user_id, stats in sorted_by_read:
 #             try:
-#                 member = await guild.fetch_member(int(user_id))
+#                 member = await self.guild.fetch_member(int(user_id))
 #                 name = member.display_name
 #             except Exception:
 #                 print(f"Member name not found for ID {user_id}")
@@ -175,7 +179,7 @@
 
 #         for user_id, stats in sorted_by_write:
 #             try:
-#                 member = await guild.fetch_member(int(user_id))
+#                 member = await self.guild.fetch_member(int(user_id))
 #                 name = member.display_name
 #             except Exception:
 #                 print(f"Member name not found for ID {user_id}")
@@ -183,12 +187,12 @@
 #             write_lines.append(f"{name}: {stats['write']}")
 
 #         # Send leaderboard as one message
-#         leaderboard_msg = await channel.send("\n".join(read_lines + ["", *write_lines]))
+#         leaderboard_msg = await self.channel.send("\n".join(read_lines + ["", *write_lines]))
 #         self.leaderboard_message_id = leaderboard_msg.id
 
 #         # Resetting so it still displays the daily message.
 #         today = datetime.date.today().strftime("%A, %B %d, %Y")
-#         msg = await channel.send(
+#         msg = await self.channel.send(
 #             f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today."
 #         )
 #         await msg.add_reaction(str(self.reading_emoji))
@@ -197,12 +201,9 @@
 #         self.tracker_message_ids.append(msg.id)
 #         if len(self.tracker_message_ids) > 3:
 #             self.tracker_message_ids.pop(0)
-            
-#         self.tracker_channel_id = channel.id
         
 #         meta["tracker_message_ids"] = self.tracker_message_ids
 #         meta["leaderboard_message_id"] = self.leaderboard_message_id
-#         meta["tracker_channel_id"] = self.tracker_channel_id
 #         meta["last_updated_date"] = today_str
         
 #         save_meta(meta)
@@ -218,10 +219,9 @@
         
 #     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
 #     async def delete_old_messages(self):
-#         channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
 #         MAX_AGE = timedelta(days = 2)
         
-#         async for message in channel.history(limit=100):
+#         async for message in self.channel.history(limit=100):
 #             now = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
 #             message_time = message.created_at.astimezone(ZoneInfo("America/Los_Angeles"))
 #             message_age = now - message_time
@@ -238,17 +238,6 @@
 #     @delete_old_messages.before_loop
 #     async def before_delete_old_messages(self):
 #         await self.bot.wait_until_ready()
-    
-
-#     def calculate_score(self, current_score: int, today: bool, yesterday: bool, two_days_ago: bool):
-#         days = [today, yesterday, two_days_ago]
-#         score = current_score
-#         for wrote in days:
-#             if wrote:
-#                 score += 1
-#             else:
-#                 score = math.floor(score / 2)
-#         return score
         
 #     @commands.Cog.listener()
 #     async def on_raw_reaction_add(self, payload):
@@ -270,15 +259,8 @@
 #         if payload.message_id not in getattr(self, "tracker_message_ids", None):
 #             print("message id not in list")
 #             return
-        
-#         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-#         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
-
-#         user_id = str(payload.user_id)
-#         emoji = payload.emoji.name
 
 #         updated = False
-#         channel = self.bot.get_channel(self.tracker_channel_id)
 #         day = ""
 #         if len(self.tracker_message_ids) > 2:
 #             if payload.message_id == self.tracker_message_ids[0]:
@@ -289,47 +271,69 @@
 #                 day = "today's "
 #         else:
 #                 day = "today's "
-#         print("day: " + day)
                 
 #         meta = load_meta()
 #         data = load_data()
 #         data.setdefault(user_id, {"read": 0, "write": 0})
         
+#         user_id = str(payload.user_id)
+#         emoji = payload.emoji.name
+        
 #         if added:
 #             if emoji == "frogReading" and user_id not in set(meta[day + "readers"]):
-#                 print("add reader")
 #                 meta[day + "readers"].append(user_id)
-#                 save_meta(meta)
 #                 updated = True
                 
 #             elif emoji == "bulbaWriter" and user_id not in set(meta[day + "writers"]):
-#                 print("add writer")
 #                 meta[day + "writers"].append(user_id)
-#                 save_meta(meta)
 #                 updated = True
                 
 #         else:
 #             if emoji == "frogReading" and user_id in set(meta[day + "readers"]):
-#                 print("remove reader")
 #                 meta[day + "readers"].remove(user_id)
-#                 save_meta(meta)
 #                 updated = True
                 
 #             elif emoji == "bulbaWriter" and user_id in set(meta[day + "writers"]):
-#                 print("remove writer")
 #                 meta[day + "writers"].remove(user_id)
-#                 save_meta(meta)
 #                 updated = True
         
-#         shallow_copy = data.copy()
-        
-#         for id, stats in shallow_copy.items():
-#             stats["read"] = self.calculate_score(stats["read"], meta["today's readers"], meta["yesterday's readers"], meta["two days ago's readers"])
-#             stats["write"] = self.calculate_score(stats["write"], meta["today's writers"], meta["yesterday's writers"], meta["two days ago's writers"])
-        
 #         if updated:
-#             # update the leaderboard as well with self.tracker_leaderboard_id
+#             save_meta(meta)
+#             shallow_copy = data.copy()
+        
+#             for id, stats in shallow_copy.items():
+#                 stats["read"] = self.calculate_score(stats["read"], id, meta["today's readers"], meta["yesterday's readers"], meta["two days ago's readers"])
+#                 stats["write"] = self.calculate_score(stats["write"], id, meta["today's writers"], meta["yesterday's writers"], meta["two days ago's writers"])
             
+
+#             # code duplicated instead of being a helper function because it needs await for async commands
+#             sorted_by_read = sorted(shallow_copy.items(), key=lambda item: item[1]['read'], reverse=True)
+#             sorted_by_write = sorted(shallow_copy.items(), key=lambda item: item[1]['write'], reverse=True)
+
+#             read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
+#             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
+
+#             for user_id, stats in sorted_by_read:
+#                 try:
+#                     member = await self.guild.fetch_member(int(user_id))
+#                     name = member.display_name
+#                 except Exception:
+#                     print(f"Member name not found for ID {user_id}")
+#                     name = f"<@{user_id}>"
+#                 read_lines.append(f"{name}: {stats['read']}")
+
+#             for user_id, stats in sorted_by_write:
+#                 try:
+#                     member = await self.guild.fetch_member(int(user_id))
+#                     name = member.display_name
+#                 except Exception:
+#                     print(f"Member name not found for ID {user_id}")
+#                     name = f"<@{user_id}>"
+#                 write_lines.append(f"{name}: {stats['write']}")
+                
+#             updated_leaderboard = "\n".join(read_lines + ["", *write_lines])
+#             message = await self.channel.fetch_message(self.leaderboard_message_id)
+#             await message.edit(content=updated_leaderboard)
             
 #             # Regenerate the message content.
 #             readers_text, writers_text = self.format_progress(
@@ -345,9 +349,8 @@
 
 #             # Edit the original message.
 #             try:
-#                 print("updating messages:", payload.message_id, self.tracker_channel_id)
 #                 for id in set(meta["tracker_message_ids"]):
-#                     message = await channel.fetch_message(id)
+#                     message = await self.channel.fetch_message(id)
 #                     await message.edit(content=new_content)
 #             except Exception as e:
 #                 print(f"Couldn't edit tracker message: {e}")
