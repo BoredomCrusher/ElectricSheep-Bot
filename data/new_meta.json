@@ -1,16 +1,27 @@
 {
   "tracker_message_ids": [
-    1418016138356461588,
-    1418016425054048299,
-    1418017422413271140
+    1418377754662928444,
+    1418377940483444747,
+    1418378130409652237
   ],
-  "tracker_leaderboard_id": 0,
-  "last_updated_date": "2025-09-17",
-  "today's readers": [],
-  "yesterday's readers": [],
-  "two days ago's readers": [],
-  "today's writers": [],
-  "yesterday's writers": [],
-  "two days ago's writers": [],
-  "leaderboard_message_id": 1418017419427057734
+  "last_updated_date": "2025-09-18",
+  "today's readers": [
+    "371172347937423362"
+  ],
+  "yesterday's readers": [
+    "371172347937423362"
+  ],
+  "two days ago's readers": [
+    "371172347937423362"
+  ],
+  "today's writers": [
+    "371172347937423362"
+  ],
+  "yesterday's writers": [
+    "371172347937423362"
+  ],
+  "two days ago's writers": [
+    "371172347937423362"
+  ],
+  "leaderboard_message_id": 1418378129411407923
 }
