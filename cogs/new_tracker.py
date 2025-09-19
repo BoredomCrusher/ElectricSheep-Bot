@@ -9,6 +9,7 @@
 # import json, os
 # import pytz
 # import math
+# import copy
 
 # DATA_FILE = "data/new_tracker.json"
 # META_FILE = "data/new_meta.json"
@@ -92,21 +93,56 @@
 
 #         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
     
-#     def calculate_score(self, current_score: int, id: int, today: bool, yesterday: bool, two_days_ago: bool):
-#         score = current_score
-#         if id in two_days_ago:
-#             score += 1
-#         else:
-#             score = math.floor(score / 2)
-            
-#         if id in yesterday:
-#             score += 1
-#         else:
-#             score = math.floor(score / 2)
+#     # Calculates current score from messages currently in the channel 
+#     # before the score changes become permanent .
+#     # def display_current_score(self, data, meta, day):
+#     #     for id, stats in data.items():
+#     #             stats["read"] = self.calculate_score(stats["read"], id, day,
+#     #                                                  meta["today's readers"],
+#     #                                                  meta["yesterday's readers"], 
+#     #                                                  meta["two days ago's readers"])
+#     #             stats["write"] = self.calculate_score(stats["write"], id, day,
+#     #                                                   meta["today's writers"],
+#     #                                                   meta["yesterday's writers"], 
+#     #                                                   meta["two days ago's writers"])
+#     #     return data
+#     def display_current_score(self, data, meta, day):
+#         for user_id, stats in data.items():
+#             stats["read"] = self.calculate_score(stats["read"], user_id, meta, day, "readers")
+#             stats["write"] = self.calculate_score(stats["write"], user_id, meta, day, "writers")
+#         return data
+    
+#     # def calculate_score(self, current_score: int, id: int, current_day: str, today: bool, yesterday: bool, two_days_ago: bool):
+#     #     score = current_score
+#     #     if id in two_days_ago:
+#     #         score += 1
+#     #     else:
+#     #         score = math.floor(score / 2)
+        
+#     #     if current_day != "two days ago's ":
+#     #         if id in yesterday:
+#     #             score += 1
+#     #         else:
+#     #             score = math.floor(score / 2)
                 
-#         if id in today:
-#             score += 1
+#     #     if current_day == "today's ":
+#     #         if id in today:
+#     #             score += 1
             
+#     #     return score
+#     def calculate_score(self, score: int, user_id: str, meta: dict, current_day: str, category: str) -> int:
+#         days = ["two days ago's ", "yesterday's ", "today's "]
+        
+#         # Only consider up through the current day
+#         cutoff = days.index(current_day) + 1
+#         active_days = days[:cutoff]
+        
+#         for day in active_days:
+#             if user_id in meta[day + category]:
+#                 score += 1 
+#             else:
+#                 score //= 2 
+        
 #         return score
     
 #     def make_leaderboard(self, sorted_by_read, sorted_by_write, read_lines, write_lines):
@@ -164,6 +200,9 @@
 #                 name = member.display_name
 #                 self.member_names[user_id] = name
             
+#             deep_copy = copy.deepcopy(data)
+#             deep_copy = self.display_current_score(deep_copy, meta, day="today's ")
+            
 #             # Updates scores and member names.
 #             # Currently, the penalty is that their score is divided by two.
 #             for user_id in data:
@@ -176,12 +215,7 @@
 #                 else:
 #                     data[user_id]["write"] += 1
 
-#             deep_copy = data.copy()
 #             save_data(data)
-            
-#             for id, stats in deep_copy.items():
-#                 stats["read"] = self.calculate_score(stats["read"], id, ["today's readers"], meta["yesterday's readers"], meta["two days ago's readers"])
-#                 stats["write"] = self.calculate_score(stats["write"], id, ["today's readers"], meta["yesterday's writers"], meta["two days ago's writers"])
             
 #             # Sort by reading and writing streaks separately.
 #             sorted_by_read = sorted(deep_copy.items(), key=lambda item: item[1]['read'], reverse=True)
@@ -208,6 +242,7 @@
 #             await msg.add_reaction(str(self.writing_emoji))
             
 #             # updating for retroactive points
+            
 #             meta["two days ago's readers"] = meta["yesterday's readers"] 
 #             meta["two days ago's writers"] = meta["yesterday's writers"] 
 #             meta["yesterday's readers"] = meta["today's readers"]
@@ -278,6 +313,7 @@
 #         if payload.message_id not in getattr(self, "tracker_message_ids", None):
 #             print("message id not in list")
 #             return
+        
 #         async with self.data_lock:
 #             updated = False
 #             day = ""
@@ -318,22 +354,27 @@
             
 #             save_meta(meta)
 #         if updated:
-#             shallow_copy = data.copy()
-        
-#             for id, stats in shallow_copy.items():
-#                 stats["read"] = self.calculate_score(stats["read"], id, 
-#                                                      meta["today's readers"],
-#                                                      meta["yesterday's readers"], 
-#                                                      meta["two days ago's readers"])
-#                 stats["write"] = self.calculate_score(stats["write"], id, 
-#                                                       meta["today's writers"],
-#                                                       meta["yesterday's writers"], 
-#                                                       meta["two days ago's writers"])
+#             leaderbard_copy = copy.deepcopy(data)
+#             current_day_scores_copy = copy.deepcopy(data)
             
-
-#             # code duplicated instead of being a helper function because it needs await for async commands
-#             sorted_by_read = sorted(shallow_copy.items(), key=lambda item: item[1]['read'], reverse=True)
-#             sorted_by_write = sorted(shallow_copy.items(), key=lambda item: item[1]['write'], reverse=True)
+#             leaderbard_copy = self.display_current_score(leaderbard_copy, meta, day)
+            
+#             # if day == "today's ":
+#             #     current_day_scores_copy = self.display_current_score(current_day_scores_copy, meta, day)
+#             # elif day == "yesterday's ":
+#             #     temp = meta["today's readers"] 
+#             #     meta["today's readers"] = []
+#             #     current_day_scores_copy = self.display_current_score(current_day_scores_copy, meta, day)
+#             #     meta["today's readers"] = temp
+#             # else:
+#             #     for id, stats in current_day_scores_copy:
+#             #         if id in meta["two days ago's readers"]:
+#             #             stats["read"] += 1
+#             #         if id in meta["two days ago's writers"]:
+#             #             stats["writers"] += 1
+                        
+#             sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=True)
+#             sorted_by_write = sorted(leaderbard_copy.items(), key=lambda item: item[1]['write'], reverse=True)
 
 #             read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
 #             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
@@ -350,7 +391,7 @@
             
 #             # Regenerate the message content.
 #             readers_text, writers_text = self.format_progress(
-#                 shallow_copy, set(meta["today's readers"]), set(meta["today's writers"]) 
+#                 leaderbard_copy, set(meta[day + "readers"]), set(meta[day + "writers"]) 
 #             )
 
 #             today = datetime.date.today().strftime("%A, %B %d, %Y")
@@ -360,11 +401,10 @@
 #                 f"**Today's writers:**\n{writers_text}"
 #             )
 
-#             # Edit the original message.
+#             # Edits the current message.
 #             try:
-#                 for id in set(meta["tracker_message_ids"]):
-#                     message = await self.channel.fetch_message(id)
-#                     await message.edit(content=new_content)
+#                 message = await self.channel.fetch_message(payload.message_id)
+#                 await message.edit(content=new_content)
 #             except Exception as e:
 #                 print(f"Couldn't edit tracker message: {e}")
     
