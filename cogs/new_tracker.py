@@ -303,8 +303,6 @@ class New_Tracker(commands.Cog):
             return
 
         # Makes sure it's reacting to today's tracker message.
-        # Print statement for error handling intentionally removed because
-        # it was spamming the terminal.
         if payload.message_id not in getattr(self, "tracker_message_ids", None):
             print("message id not in list")
             return
