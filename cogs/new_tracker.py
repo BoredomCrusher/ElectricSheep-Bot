@@ -327,6 +327,7 @@ class New_Tracker(commands.Cog):
             data.setdefault(user_id, {"read": 0, "write": 0})
             emoji = payload.emoji.name
             
+            # Adds or removes user from current day.
             if added:
                 if emoji == "frogReading" and user_id not in set(meta[day + "readers"]):
                     meta[day + "readers"].append(user_id)
