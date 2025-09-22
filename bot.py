@@ -28,7 +28,7 @@ async def main():
     async with bot:
         await bot.load_extension("cogs.bot_commands")
         await bot.load_extension("cogs.tracker")
-        # await bot.load_extension("cogs.new_tracker")
+        await bot.load_extension("cogs.new_tracker")
         await bot.load_extension("cogs.submission_grinder")
         await bot.start(TOKEN)
         
