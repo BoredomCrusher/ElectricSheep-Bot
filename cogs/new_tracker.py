@@ -13,7 +13,7 @@ import copy
 
 DATA_FILE = "data/new_tracker.json"
 META_FILE = "data/new_meta.json"
-CHANNEL = "CHANNEL_ID"
+CHANNEL = "TRACKER_CHANNEL_ID"
 
 def load_data():
     if not os.path.exists(DATA_FILE):
@@ -69,44 +69,52 @@ class New_Tracker(commands.Cog):
         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         self.member_names = {}
-        
-        try:
-            data = load_data()
-            # wait until ready and get guild
-            await self.bot.wait_until_ready()
-            self.channel = self.bot.get_channel(int(os.getenv("CHANNEL")))
-            self.guild = self.channel.guild
-
-            for user_id in data:
-                try:
-                    member = await self.guild.fetch_member(int(user_id))
-                    self.member_names[user_id] = member.display_name
-                except Exception as e:
-                    print(f"Couldn't fetch member {user_id}: {e}")
-        except Exception as e:
-            print(f"Couldn't rebuild member_names: {e}")
-            
         self.run_daily_update.start()
         self.delete_old_messages.start()
+     
+            
+    @commands.Cog.listener()
+    async def on_ready(self):
+        if not self.channel:
+            channel_id = os.getenv(CHANNEL)
+            if channel_id:
+                self.channel = self.bot.get_channel(int(channel_id))
+                self.guild = self.channel.guild
+                print(f"on ready: using {self.channel}")
+            
         
     def cog_unload(self):
         self.run_daily_update.cancel()
         self.delete_old_messages.cancel()
         
-    def format_progress(self, data, today_readers, today_writers):
+    async def resolve_member_name(self, user_id: int) -> str:
+        if user_id in self.member_names:
+            return self.member_names[user_id]
+
+        # Try cached lookup first
+        member = self.guild.get_member(user_id)
+        if not member:
+            try:
+                member = await self.guild.fetch_member(user_id)
+            except Exception:
+                return f"Unknown User ({user_id})"
+
+        self.member_names[user_id] = member.display_name
+        return member.display_name
+
+        
+    async def format_progress(self, data, today_readers, today_writers):
         readers_text = []
         writers_text = []
 
         for user_id in today_readers:
             stats = data.get(user_id, {"read": 0})
-            member = self.bot.get_user(int(user_id))  # Convert string back to int
-            name = member.display_name if member else f"<@{user_id}>"
+            name = await self.resolve_member_name(int(user_id))
             readers_text.append(f"{name}: {stats['read']}")
 
         for user_id in today_writers:
             stats = data.get(user_id, {"write": 0})
-            member = self.bot.get_user(int(user_id))
-            name = member.display_name if member else f"<@{user_id}>"
+            name = await self.resolve_member_name(int(user_id))
             writers_text.append(f"{name}: {stats['write']}")
 
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
@@ -138,22 +146,14 @@ class New_Tracker(commands.Cog):
 
         return score
     
-    def make_leaderboard(self, sorted_by_read, sorted_by_write, read_lines, write_lines):
-        for user_id, stats in sorted_by_read:
-            if user_id not in self.member_names:
-                print(f"Member name not found for ID {user_id}")
-                name = str(user_id)
-            else:
-                name = self.member_names[user_id]
-            read_lines.append(f"{name}: {stats['read']}")
-
-        for user_id, stats in sorted_by_write:
-            if user_id not in self.member_names:
-                print(f"Member name not found for ID {user_id}")
-                name = str(user_id)
-            else:
-                name = self.member_names[user_id]
-            write_lines.append(f"{name}: {stats['write']}")
+    async def make_leaderboard(self, sorted_by_read, sorted_by_write, read_lines, write_lines):
+        for user_id, scores in sorted_by_read:
+            name = await self.resolve_member_name(int(user_id))
+            read_lines.append(f"{name}: {scores['read']}")
+        
+        for user_id, scores in sorted_by_write:
+            name = await self.resolve_member_name(int(user_id))
+            write_lines.append(f"{name}: {scores['write']}")
         
         return "\n".join(read_lines + ["", *write_lines])
         
@@ -216,7 +216,7 @@ class New_Tracker(commands.Cog):
             read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
 
-            leaderboard_msg = await self.channel.send(self.make_leaderboard(
+            leaderboard_msg = await self.channel.send(await self.make_leaderboard(
                                                         sorted_by_read, 
                                                         sorted_by_write, 
                                                         read_lines, write_lines
@@ -348,31 +348,34 @@ class New_Tracker(commands.Cog):
             # Overly paranoid mutex lock
             async with self.data_lock:
                 leaderbard_copy = self.display_current_score(data, meta, day, past_day_display=False)
-                        
-            sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=True)
-            sorted_by_write = sorted(leaderbard_copy.items(), key=lambda item: item[1]['write'], reverse=True)
-
-            read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
-            write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
-                
-            updated_leaderboard = self.make_leaderboard(
-                sorted_by_read, 
-                sorted_by_write, 
-                read_lines, 
-                write_lines
-            )
             
-            try:
-                message = await self.channel.fetch_message(self.leaderboard_message_id)
-                await message.edit(content=updated_leaderboard)
-            except Exception as e:
-                print(f"Couldn't edit leaderboard: {e}")
+            self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+            self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+                        
+            # sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=True)
+            # sorted_by_write = sorted(leaderbard_copy.items(), key=lambda item: item[1]['write'], reverse=True)
+
+            # read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
+            # write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
+                
+            # updated_leaderboard = await self.make_leaderboard(
+            #     sorted_by_read, 
+            #     sorted_by_write, 
+            #     read_lines, 
+            #     write_lines
+            # )
+            
+            # try:
+            #     message = await self.channel.fetch_message(self.leaderboard_message_id)
+            #     await message.edit(content=updated_leaderboard)
+            # except Exception as e:
+            #     print(f"Couldn't edit leaderboard: {e}")
             
             today = datetime.date.today().strftime("%A, %B %d, %Y")
 
             # Edits the current message.
             if day == "today's ":
-                readers_text, writers_text = self.format_progress(
+                readers_text, writers_text = await self.format_progress(
                     leaderbard_copy, set(meta[day + "readers"]), set(meta[day + "writers"]) 
                 )
                 
@@ -392,7 +395,7 @@ class New_Tracker(commands.Cog):
                 days = ["two days ago's ", "yesterday's ", "today's "]
                 for index in range(len(meta["tracker_message_ids"])):
                     
-                    readers_text, writers_text = self.format_progress(
+                    readers_text, writers_text = await self.format_progress(
                         self.display_current_score(data, meta, days[index], past_day_display=True), 
                         set(meta[days[index] + "readers"]), 
                         set(meta[days[index] + "writers"]) 
