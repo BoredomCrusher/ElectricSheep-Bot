@@ -11,7 +11,7 @@ import pytz
 
 DATA_FILE = "data/new_tracker.json"
 META_FILE = "data/new_meta.json"
-CHANNEL = "TRACKER_CHANNEL_ID"
+CHANNEL = "CHANNEL_ID"
 
 def load_data():
     if not os.path.exists(DATA_FILE):
@@ -48,7 +48,8 @@ class New_Tracker(commands.Cog):
         try:
             with open(META_FILE, "r") as f:
                 meta = json.load(f)
-                self.tracker_message_ids = meta.get("tracker_message_ids")
+                self.tracker_message_ids = meta.get("tracker_message_ids", [])
+                self.leaderboard_message_id = meta.get("leaderboard_message_id")
 
                 # Daily writers and readers are no longer local,
                 # saving them in meta.json instead means they aren't reset
@@ -66,6 +67,23 @@ class New_Tracker(commands.Cog):
         self.writing_emoji = self.bot.get_emoji(1061522051501928498)
         self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         self.member_names = {}
+        
+        try:
+            data = load_data()
+            # wait until ready and get guild
+            await self.bot.wait_until_ready()
+            self.channel = self.bot.get_channel(int(os.getenv("CHANNEL")))
+            self.guild = self.channel.guild
+
+            for user_id in data:
+                try:
+                    member = await self.guild.fetch_member(int(user_id))
+                    self.member_names[user_id] = member.display_name
+                except Exception as e:
+                    print(f"Couldn't fetch member {user_id}: {e}")
+        except Exception as e:
+            print(f"Couldn't rebuild member_names: {e}")
+            
         self.run_daily_update.start()
         self.delete_old_messages.start()
         
