@@ -13,6 +13,7 @@ import copy
 
 DATA_FILE = "data/new_tracker.json"
 META_FILE = "data/new_meta.json"
+CHANNEL = "TRACKER_CHANNEL_ID"
 
 def load_data():
     if not os.path.exists(DATA_FILE):
@@ -69,7 +70,6 @@ class New_Tracker(commands.Cog):
         self.member_names = {}
         self.run_daily_update.start()
         self.delete_old_messages.start()
-
         
     def cog_unload(self):
         self.run_daily_update.cancel()
@@ -93,30 +93,30 @@ class New_Tracker(commands.Cog):
 
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
     
-    def display_current_score(self, data: dict, meta: dict, day: str) -> dict:
+    def display_current_score(self, data: dict, meta: dict, day: str, past_day_display: bool) -> dict:
         display_data = {}
         
         for user_id, stats in data.items():
             display_data[user_id] = {
-                "read": self.calculate_score(stats["read"], user_id, meta, day, "readers"),
-                "write": 0,
+                "read": self.calculate_score(stats["read"], user_id, meta, day, "readers", past_day_display),
+                "write": self.calculate_score(stats["write"], user_id, meta, day, "writers", past_day_display),
             }
             
         return display_data
     
-    def calculate_score(self, score: int, user_id: str, meta: dict, current_day: str, category: str) -> int:
+    def calculate_score(self, score: int, user_id: str, meta: dict, current_day: str, category: str, past_day_display: bool) -> int:
         days = ["two days ago's ", "yesterday's ", "today's "]
-
-        penalties = [day for day in days if user_id not in meta[day + category]]
-        bonuses = [day for day in days if user_id in meta[day + category]]
-
-        # Apply all bonuses first.
-        score += len(bonuses)
-
-        # Apply all penalties afterward.
-        for current_day in penalties:
-            if current_day != "today's ":
-                score = (score + 1) // 2
+        
+        if past_day_display:
+            cutoff = days.index(current_day) + 1
+            active_days = days[:cutoff]
+            days = active_days
+            
+        for day in days:
+            if user_id not in meta[day + category] and day != "today's ":
+                score //= 2
+            elif user_id in meta[day + category]:
+                score += 1
 
         return score
     
@@ -153,7 +153,7 @@ class New_Tracker(commands.Cog):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily tracker update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
         await self.bot.wait_until_ready()
-        self.channel = self.bot.get_channel(int(os.getenv("CHANNEL_ID")))
+        self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
         self.guild = self.channel.guild
         
         async with self.data_lock:
@@ -164,7 +164,6 @@ class New_Tracker(commands.Cog):
             today_str = datetime.datetime.now(PST).date().isoformat()
             
             # Prevents duplicate penalty if already updated today.
-            # Currently commented out for testing purposes.
             if meta.get("last_updated_date") ==  today_str:
                 print("Daily update already performed today.")
                 return
@@ -174,23 +173,22 @@ class New_Tracker(commands.Cog):
                 name = member.display_name
                 self.member_names[user_id] = name
             
-            deep_copy = self.display_current_score(data, meta, day="today's ")
+            deep_copy = self.display_current_score(data, meta, day="today's ", past_day_display=False)
             
             # Updates scores and member names.
             # Currently, the penalty is that their score is divided by two.
             for user_id in data:
                 if user_id not in set(meta["two days ago's readers"]):
-                    data[user_id]["read"] = int((data[user_id]["read"] + 1) // 2)
+                    data[user_id]["read"] = data[user_id]["read"] // 2
                 else:
                     data[user_id]["read"] += 1
                 if user_id not in set(meta["two days ago's writers"]):
-                    data[user_id]["write"] = int((data[user_id]["write"] + 1) // 2)
+                    data[user_id]["write"] = data[user_id]["write"] // 2
                 else:
                     data[user_id]["write"] += 1
 
             save_data(data)
             
-            # Sort by reading and writing streaks separately.
             sorted_by_read = sorted(deep_copy.items(), key=lambda item: item[1]['read'], reverse=True)
             sorted_by_write = sorted(deep_copy.items(), key=lambda item: item[1]['write'], reverse=True)
 
@@ -200,7 +198,6 @@ class New_Tracker(commands.Cog):
             read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
 
-            # Send leaderboard as one message
             leaderboard_msg = await self.channel.send(self.make_leaderboard(
                                                         sorted_by_read, 
                                                         sorted_by_write, 
@@ -208,7 +205,7 @@ class New_Tracker(commands.Cog):
                                                         ))
             self.leaderboard_message_id = leaderboard_msg.id
 
-            # Resetting so it still displays the daily message.
+            # Resets so it still displays the daily message.
             today = datetime.date.today().strftime("%A, %B %d, %Y")
             msg = await self.channel.send(
                 f"Today is **{today}**.\n React with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today."
@@ -216,7 +213,7 @@ class New_Tracker(commands.Cog):
             await msg.add_reaction(str(self.reading_emoji))
             await msg.add_reaction(str(self.writing_emoji))
             
-            # updating for retroactive points
+            # Updates for retroactive scoring.
             
             meta["two days ago's readers"] = meta["yesterday's readers"] 
             meta["two days ago's writers"] = meta["yesterday's writers"] 
@@ -328,8 +325,9 @@ class New_Tracker(commands.Cog):
             
             save_meta(meta)
         if updated:
+            # Overly paranoid mutex lock
             async with self.data_lock:
-                leaderbard_copy = self.display_current_score(data, meta, day)
+                leaderbard_copy = self.display_current_score(data, meta, day, past_day_display=False)
                         
             sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=True)
             sorted_by_write = sorted(leaderbard_copy.items(), key=lambda item: item[1]['write'], reverse=True)
@@ -350,24 +348,47 @@ class New_Tracker(commands.Cog):
             except Exception as e:
                 print(f"Couldn't edit leaderboard: {e}")
             
-            # Regenerate the message content.
-            readers_text, writers_text = self.format_progress(
-                leaderbard_copy, set(meta[day + "readers"]), set(meta[day + "writers"]) 
-            )
-
             today = datetime.date.today().strftime("%A, %B %d, %Y")
-            new_content = (
+
+            # Edits the current message.
+            if day == "today's ":
+                readers_text, writers_text = self.format_progress(
+                    leaderbard_copy, set(meta[day + "readers"]), set(meta[day + "writers"]) 
+                )
+                
+                new_content = (
                 f"Today is **{today}**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                 f"**Today's readers:**\n{readers_text}\n\n"
                 f"**Today's writers:**\n{writers_text}"
-            )
-
-            # Edits the current message.
-            try:
-                message = await self.channel.fetch_message(payload.message_id)
-                await message.edit(content=new_content)
-            except Exception as e:
-                print(f"Couldn't edit tracker message: {e}")
+                )
+                
+                try:
+                    message = await self.channel.fetch_message(payload.message_id)
+                    await message.edit(content=new_content)
+                except Exception as e:
+                    print(f"Couldn't edit today's tracker message: {e}")
+            else:
+                # Retroactively alters current and any existing future days based on new info.
+                days = ["two days ago's ", "yesterday's ", "today's "]
+                for index in range(len(meta["tracker_message_ids"])):
+                    
+                    readers_text, writers_text = self.format_progress(
+                        self.display_current_score(data, meta, days[index], past_day_display=True), 
+                        set(meta[days[index] + "readers"]), 
+                        set(meta[days[index] + "writers"]) 
+                    )
+                    
+                    new_content = (
+                        f"Today is **{today}**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
+                        f"**Today's readers:**\n{readers_text}\n\n"
+                        f"**Today's writers:**\n{writers_text}"
+                    )
+                    
+                    try:
+                        message = await self.channel.fetch_message(meta["tracker_message_ids"][index])
+                        await message.edit(content=new_content)
+                    except Exception as e:
+                        print(f"Couldn't edit past tracker message: {e}")
     
 async def setup(bot):
     await bot.add_cog(New_Tracker(bot))
