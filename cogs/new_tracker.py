@@ -8,6 +8,8 @@ import discord
 import asyncio
 import json, os
 import pytz
+import math
+import copy
 
 DATA_FILE = "data/new_tracker.json"
 META_FILE = "data/new_meta.json"
@@ -263,6 +265,7 @@ class New_Tracker(commands.Cog):
     async def delete_old_messages(self):
         MAX_AGE = timedelta(days = 2)
         
+        self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
         async for message in self.channel.history(limit=100):
             now = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
             message_time = message.created_at.astimezone(ZoneInfo("America/Los_Angeles"))
@@ -300,6 +303,7 @@ class New_Tracker(commands.Cog):
             print("message id not in list")
             return
         
+        self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
         async with self.data_lock:
             updated = False
             day = ""
