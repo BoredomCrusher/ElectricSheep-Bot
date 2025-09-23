@@ -8,8 +8,6 @@ import discord
 import asyncio
 import json, os
 import pytz
-import math
-import copy
 
 DATA_FILE = "data/new_tracker.json"
 META_FILE = "data/new_meta.json"
