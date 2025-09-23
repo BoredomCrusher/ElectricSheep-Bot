@@ -99,43 +99,24 @@ class New_Tracker(commands.Cog):
         for user_id, stats in data.items():
             display_data[user_id] = {
                 "read": self.calculate_score(stats["read"], user_id, meta, day, "readers"),
-                "write": self.calculate_score(stats["write"], user_id, meta, day, "writers"),
+                "write": 0,
             }
             
         return display_data
     
-    # def calculate_score(self, score: int, user_id: str, meta: dict, current_day: str, category: str) -> int:
-    #     days = ["two days ago's ", "yesterday's ", "today's "]
-        
-    #     # Only consider up through the current day
-    #     cutoff = days.index(current_day) + 1
-    #     active_days = days[:cutoff]
-        
-    #     modified_score = score
-    #     for day in active_days:
-    #         if user_id in meta[day + category]:
-    #             modified_score += 1 
-    #         elif day != "today's ":
-    #             modified_score = (modified_score + 1 ) // 2
-        
-    #     return int(modified_score)
     def calculate_score(self, score: int, user_id: str, meta: dict, current_day: str, category: str) -> int:
         days = ["two days ago's ", "yesterday's ", "today's "]
-        cutoff = days.index(current_day) + 1
-        active_days = days[:cutoff]
 
-        penalties = [day for day in active_days if user_id not in meta[day + category]]
-        bonuses = [day for day in active_days if user_id in meta[day + category]]
+        penalties = [day for day in days if user_id not in meta[day + category]]
+        bonuses = [day for day in days if user_id in meta[day + category]]
 
-        # Apply all bonuses first
+        # Apply all bonuses first.
         score += len(bonuses)
-        print(f"bonuses: {score}")
 
-        # Apply all penalties afterward
+        # Apply all penalties afterward.
         for current_day in penalties:
             if current_day != "today's ":
                 score = (score + 1) // 2
-                print(f"penalties: {score}")
 
         return score
     
@@ -159,8 +140,7 @@ class New_Tracker(commands.Cog):
         return "\n".join(read_lines + ["", *write_lines])
         
 
-    # @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
-    @tasks.loop(seconds = 45)
+    @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def run_daily_update(self):
         print("RUN DAILY UPDATE — FROM LOOP")
         await self.daily_update()
@@ -185,9 +165,9 @@ class New_Tracker(commands.Cog):
             
             # Prevents duplicate penalty if already updated today.
             # Currently commented out for testing purposes.
-            # if meta.get("last_updated_date") ==  today_str:
-            #     print("Daily update already performed today.")
-            #     return
+            if meta.get("last_updated_date") ==  today_str:
+                print("Daily update already performed today.")
+                return
             
             for user_id in data:
                 member = await self.guild.fetch_member(int(user_id))
@@ -257,14 +237,14 @@ class New_Tracker(commands.Cog):
             
             save_meta(meta)
         
-    # @commands.command(name="force_daily_tracker")
-    # @commands.is_owner()
-    # async def test_daily(self, ctx):
-    #     print(f"TEST COMMAND CALLED by {ctx.author} in {ctx.channel}")
-    #     await ctx.send("Running daily update manually...")
-    #     print("RUN DAILY UPDATE — FROM COMMAND (before call)")
-    #     await self.daily_update()
-    #     print("RUN DAILY UPDATE — FROM COMMAND (after call)")
+    @commands.command(name="force_daily_tracker")
+    @commands.is_owner()
+    async def test_daily(self, ctx):
+        print(f"TEST COMMAND CALLED by {ctx.author} in {ctx.channel}")
+        await ctx.send("Running daily update manually...")
+        print("RUN DAILY UPDATE — FROM COMMAND (before call)")
+        await self.daily_update()
+        print("RUN DAILY UPDATE — FROM COMMAND (after call)")
         
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def delete_old_messages(self):

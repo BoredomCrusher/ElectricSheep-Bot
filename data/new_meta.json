@@ -1,8 +1,8 @@
 {
   "tracker_message_ids": [
-    1419779765463810231,
-    1419779961144741978,
-    1419782610816602284
+    1419833256886538401,
+    1419833392299638867,
+    1419836146879565926
   ],
   "last_updated_date": "2025-09-22",
   "today's readers": [
@@ -14,14 +14,8 @@
   "two days ago's readers": [
     "371172347937423362"
   ],
-  "today's writers": [
-    "371172347937423362"
-  ],
-  "yesterday's writers": [
-    "371172347937423362"
-  ],
-  "two days ago's writers": [
-    "371172347937423362"
-  ],
-  "leaderboard_message_id": 1419782609742856324
+  "today's writers": [],
+  "yesterday's writers": [],
+  "two days ago's writers": [],
+  "leaderboard_message_id": 1419836145893773384
 }
