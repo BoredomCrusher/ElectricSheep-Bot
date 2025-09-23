@@ -15,7 +15,6 @@ from bs4 import BeautifulSoup
 import discord
 import requests
 import json, os
-import asyncio
 import datetime
 import pytz
 

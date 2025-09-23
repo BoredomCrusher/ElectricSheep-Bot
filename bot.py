@@ -27,13 +27,8 @@ async def on_ready():
 async def main():
     async with bot:
         await bot.load_extension("cogs.bot_commands")
-<<<<<<< HEAD
-        await bot.load_extension("cogs.tracker")
-        # await bot.load_extension("cogs.new_tracker")
-=======
         # await bot.load_extension("cogs.tracker")
         await bot.load_extension("cogs.new_tracker")
->>>>>>> b1c86db92bd30a60e03a775ff8f2234e9cf6ad4a
         await bot.load_extension("cogs.submission_grinder")
         await bot.start(TOKEN)
         
