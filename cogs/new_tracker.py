@@ -152,6 +152,13 @@ class New_Tracker(commands.Cog):
             write_lines.append(f"{name}: {scores['write']}")
         
         return "\n".join(read_lines + ["", *write_lines])
+    
+    async def safely_edit_message(self, message_id: int, new_content: str):
+        try:
+            message = self.channel.get_partial_message(message_id)
+            await message.edit(content=new_content)
+        except Exception as e:
+            print(f"Couldn't edit message {message_id}: {e}")
 
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def run_daily_update(self):
@@ -174,15 +181,15 @@ class New_Tracker(commands.Cog):
             self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
             self.guild = self.channel.guild
         
+        PST = ZoneInfo("America/Los_Angeles")
+        today_str = datetime.datetime.now(PST).date().isoformat()
+            
         async with self.data_lock:
             data = load_data()
             meta = load_meta()
             
-            PST = ZoneInfo("America/Los_Angeles")
-            today_str = datetime.datetime.now(PST).date().isoformat()
-            
             # Prevents duplicate penalty if already updated today.
-            if meta.get("last_updated_date") ==  today_str:
+            if meta["last_updated_date"] ==  today_str:
                 print("Daily update already performed today.")
                 return
             
@@ -208,9 +215,6 @@ class New_Tracker(commands.Cog):
             
             sorted_by_read = sorted(deep_copy.items(), key=lambda item: item[1]['read'], reverse=True)
             sorted_by_write = sorted(deep_copy.items(), key=lambda item: item[1]['write'], reverse=True)
-
-            self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-            self.reading_emoji = self.bot.get_emoji(1397736959882956842)
             
             read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
@@ -365,14 +369,7 @@ class New_Tracker(commands.Cog):
                 write_lines
             )
             
-            try:
-                message = self.channel.get_partial_message(self.leaderboard_message_id)
-                if not message:
-                    print("leaderboard partial message not found")
-                    message = await self.channel.fetch_message(self.leaderboard_message_id)
-                await message.edit(content=updated_leaderboard)
-            except Exception as e:
-                print(f"Couldn't edit leaderboard: {e}")
+            await self.safely_edit_message(self.leaderboard_message_id, updated_leaderboard)
             
             today = datetime.date.today().strftime("%A, %B %d, %Y")
 
@@ -388,14 +385,7 @@ class New_Tracker(commands.Cog):
                     f"**Today's writers:**\n{writers_text}"
                 )
                 
-                try:
-                    message = self.channel.get_partial_message(payload.message_id)
-                    if not message:
-                        print("partial message not found")
-                        message = await self.channel.fetch_message(payload.message_id)
-                    await message.edit(content=new_content)
-                except Exception as e:
-                    print(f"Couldn't edit today's tracker message: {e}")
+                await self.safely_edit_message(payload.message_id, new_content)
             else:
                 # Retroactively alters current and any existing future days based on new info.
                 for index in range(len(meta["tracker_message_ids"])):
@@ -412,14 +402,7 @@ class New_Tracker(commands.Cog):
                         f"**Today's writers:**\n{writers_text}"
                     )
                     
-                    try:
-                        message = self.channel.get_partial_message(meta["tracker_message_ids"][index])
-                        if not message:
-                            print("partial message not found")
-                            message = await self.channel.fetch_message(meta["tracker_message_ids"][index])
-                        await message.edit(content=new_content)
-                    except Exception as e:
-                        print(f"Couldn't edit past tracker message: {e}")
+                    await self.safely_edit_message(meta["tracker_message_ids"][index], new_content)
     
 async def setup(bot):
     await bot.add_cog(New_Tracker(bot))
