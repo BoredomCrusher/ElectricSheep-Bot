@@ -66,8 +66,6 @@ class New_Tracker(commands.Cog):
             pass
 
     async def cog_load(self):
-        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
         self.member_names = {}
         self.run_daily_update.start()
         self.delete_old_messages.start()
@@ -81,8 +79,8 @@ class New_Tracker(commands.Cog):
                 self.channel = self.bot.get_channel(int(channel_id))
                 self.guild = self.channel.guild
                 print(f"on ready: using {self.channel}")
-        #self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-        #self.reading_emoji = self.bot.get_emoji(1397736959882956842)
+        self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        self.reading_emoji = self.bot.get_emoji(1397736959882956842)
               
     def cog_unload(self):
         self.run_daily_update.cancel()
