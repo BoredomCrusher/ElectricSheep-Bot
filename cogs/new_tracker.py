@@ -200,8 +200,8 @@ class New_Tracker(commands.Cog):
 
             save_data(data)
             
-            sorted_by_read = sorted(deep_copy.items(), key=lambda item: item[1]['read'], reverse=False)
-            sorted_by_write = sorted(deep_copy.items(), key=lambda item: item[1]['write'], reverse=False)
+            sorted_by_read = sorted(deep_copy.items(), key=lambda item: item[1]['read'], reverse=True)
+            sorted_by_write = sorted(deep_copy.items(), key=lambda item: item[1]['write'], reverse=True)
 
             self.writing_emoji = self.bot.get_emoji(1061522051501928498)
             self.reading_emoji = self.bot.get_emoji(1397736959882956842)
@@ -343,8 +343,8 @@ class New_Tracker(commands.Cog):
             self.writing_emoji = self.bot.get_emoji(1061522051501928498)
             self.reading_emoji = self.bot.get_emoji(1397736959882956842)
                         
-            sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=False)
-            sorted_by_write = sorted(leaderbard_copy.items(), key=lambda item: item[1]['write'], reverse=False)
+            sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=True)
+            sorted_by_write = sorted(leaderbard_copy.items(), key=lambda item: item[1]['write'], reverse=True)
 
             read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
