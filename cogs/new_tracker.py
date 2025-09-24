@@ -360,7 +360,9 @@ class New_Tracker(commands.Cog):
             )
             
             try:
-                message = await self.channel.fetch_message(self.leaderboard_message_id)
+                message = self.channel.get_message(self.leaderboard_message_id)
+                if not message:
+                    message = await self.channel.fetch_message(self.leaderboard_message_id)
                 await message.edit(content=updated_leaderboard)
             except Exception as e:
                 print(f"Couldn't edit leaderboard: {e}")
@@ -380,7 +382,9 @@ class New_Tracker(commands.Cog):
                 )
                 
                 try:
-                    message = await self.channel.fetch_message(payload.message_id)
+                    message = self.channel.get_message(payload.message_id)
+                    if not message:
+                        message = await self.channel.fetch_message(payload.message_id)
                     await message.edit(content=new_content)
                 except Exception as e:
                     print(f"Couldn't edit today's tracker message: {e}")
@@ -402,7 +406,9 @@ class New_Tracker(commands.Cog):
                     )
                     
                     try:
-                        message = await self.channel.fetch_message(meta["tracker_message_ids"][index])
+                        message = self.channel.get_message(meta["tracker_message_ids"][index])
+                        if not message:
+                            message = await self.channel.fetch_message(meta["tracker_message_ids"][index])
                         await message.edit(content=new_content)
                     except Exception as e:
                         print(f"Couldn't edit past tracker message: {e}")
