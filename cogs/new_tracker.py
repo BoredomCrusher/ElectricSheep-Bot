@@ -384,6 +384,7 @@ class New_Tracker(commands.Cog):
                 try:
                     message = self.channel.get_partial_message(payload.message_id)
                     if not message:
+                        print("partial message not found")
                         message = await self.channel.fetch_message(payload.message_id)
                     await message.edit(content=new_content)
                 except Exception as e:
@@ -408,6 +409,7 @@ class New_Tracker(commands.Cog):
                     try:
                         message = self.channel.get_partial_message(meta["tracker_message_ids"][index])
                         if not message:
+                            print("partial message not found")
                             message = await self.channel.fetch_message(meta["tracker_message_ids"][index])
                         await message.edit(content=new_content)
                     except Exception as e:
