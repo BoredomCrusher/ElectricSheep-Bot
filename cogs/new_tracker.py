@@ -353,7 +353,7 @@ class New_Tracker(commands.Cog):
             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
             
             # If one name is missing, all of them are missing.
-            if (payload.user_id not in self.member_names):
+            if (user_id not in self.member_names):
                 print("Fetching missing member names")
                 for user_id in data:
                     self.member_names[user_id] = await self.resolve_member_name(int(user_id))
