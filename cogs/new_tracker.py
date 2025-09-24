@@ -360,7 +360,7 @@ class New_Tracker(commands.Cog):
             )
             
             try:
-                message = self.channel.get_message(self.leaderboard_message_id)
+                message = self.channel.get_partial_message(self.leaderboard_message_id)
                 if not message:
                     message = await self.channel.fetch_message(self.leaderboard_message_id)
                 await message.edit(content=updated_leaderboard)
@@ -382,7 +382,7 @@ class New_Tracker(commands.Cog):
                 )
                 
                 try:
-                    message = self.channel.get_message(payload.message_id)
+                    message = self.channel.get_partial_message(payload.message_id)
                     if not message:
                         message = await self.channel.fetch_message(payload.message_id)
                     await message.edit(content=new_content)
@@ -406,7 +406,7 @@ class New_Tracker(commands.Cog):
                     )
                     
                     try:
-                        message = self.channel.get_message(meta["tracker_message_ids"][index])
+                        message = self.channel.get_partial_message(meta["tracker_message_ids"][index])
                         if not message:
                             message = await self.channel.fetch_message(meta["tracker_message_ids"][index])
                         await message.edit(content=new_content)
