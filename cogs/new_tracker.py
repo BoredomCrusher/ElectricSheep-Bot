@@ -369,7 +369,15 @@ class New_Tracker(commands.Cog):
                 write_lines
             )
             
-            await self.safely_edit_message(self.leaderboard_message_id, updated_leaderboard)
+            
+            try:
+                message = self.channel.get_partial_message(self.leaderboard_message_id)
+                if not message:
+                    print("leaderboard partial message not found")
+                    message = await self.channel.fetch_message(self.leaderboard_message_id)
+                await message.edit(content=updated_leaderboard)
+            except Exception as e:
+                print(f"Couldn't edit leaderboard: {e}")
             
             today = datetime.date.today().strftime("%A, %B %d, %Y")
 
@@ -385,7 +393,14 @@ class New_Tracker(commands.Cog):
                     f"**Today's writers:**\n{writers_text}"
                 )
                 
-                await self.safely_edit_message(payload.message_id, new_content)
+                try:
+                    message = self.channel.get_partial_message(payload.message_id)
+                    if not message:
+                        print("partial message not found")
+                        message = await self.channel.fetch_message(payload.message_id)
+                    await message.edit(content=new_content)
+                except Exception as e:
+                    print(f"Couldn't edit today's tracker message: {e}")
             else:
                 # Retroactively alters current and any existing future days based on new info.
                 for index in range(len(meta["tracker_message_ids"])):
@@ -402,7 +417,14 @@ class New_Tracker(commands.Cog):
                         f"**Today's writers:**\n{writers_text}"
                     )
                     
-                    await self.safely_edit_message(meta["tracker_message_ids"][index], new_content)
+                    try:
+                        message = self.channel.get_partial_message(meta["tracker_message_ids"][index])
+                        if not message:
+                            print("partial message not found")
+                            message = await self.channel.fetch_message(meta["tracker_message_ids"][index])
+                        await message.edit(content=new_content)
+                    except Exception as e:
+                        print(f"Couldn't edit past tracker message: {e}")
     
 async def setup(bot):
     await bot.add_cog(New_Tracker(bot))
