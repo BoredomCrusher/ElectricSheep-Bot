@@ -303,7 +303,7 @@ class New_Tracker(commands.Cog):
 
         # Makes sure it's reacting to today's tracker message.
         if payload.message_id not in getattr(self, "tracker_message_ids", None):
-            print(f"message id not in list, id: {payload.message_id}")
+            # print(f"message id not in list, id: {payload.message_id}")
             return
         
         updated = False
@@ -369,7 +369,8 @@ class New_Tracker(commands.Cog):
                 write_lines
             )
             
-            
+            # This code doesn't have a helper function becasue using 
+            # an async helper function was slightly slower
             try:
                 message = self.channel.get_partial_message(self.leaderboard_message_id)
                 if not message:
