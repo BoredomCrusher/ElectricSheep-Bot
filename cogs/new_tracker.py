@@ -385,7 +385,7 @@ class New_Tracker(commands.Cog):
             # Edits the current message.
             if day == "today's ":
                 readers_text, writers_text = self.format_progress(
-                    leaderbard_copy, set(meta[day + "readers"]), set(meta[day + "writers"]) 
+                    leaderbard_copy, sorted(set(meta[day + "readers"]), reverse=True), sorted(set(meta[day + "writers"]), reverse=True) 
                 )
                 
                 new_content = (
@@ -408,8 +408,8 @@ class New_Tracker(commands.Cog):
                     
                     readers_text, writers_text = self.format_progress(
                         self.display_current_score(data, meta, DAYS[index], past_day_display=True), 
-                        set(meta[DAYS[index] + "readers"]), 
-                        set(meta[DAYS[index] + "writers"]) 
+                        sorted(set(meta[DAYS[index] + "readers"]), reverse=True), 
+                        sorted(set(meta[DAYS[index] + "writers"]), reverse=True) 
                     )
                     
                     new_content = (
