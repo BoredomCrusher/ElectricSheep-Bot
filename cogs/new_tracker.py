@@ -292,7 +292,7 @@ class New_Tracker(commands.Cog):
 
         # Makes sure it's reacting to today's tracker message.
         if payload.message_id not in getattr(self, "tracker_message_ids", None):
-            print("message id not in list")
+            print(f"message id not in list, id: {payload.message_id}")
             return
         
         self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
