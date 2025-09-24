@@ -108,11 +108,15 @@ class New_Tracker(commands.Cog):
             stats = data.get(user_id, {"read": 0})
             name = self.member_names[user_id]
             readers_text.append(f"{name}: {stats['read']}")
+            
+        readers_text = sorted(readers_text, key=lambda x: int(x.split(": ")[1]), reverse=True)
 
         for user_id in today_writers:
             stats = data.get(user_id, {"write": 0})
             name = self.member_names[user_id]
             writers_text.append(f"{name}: {stats['write']}")
+        
+        writers_text = sorted(writers_text, key=lambda x: int(x.split(": ")[1]), reverse=True)          
 
         return "\n".join(readers_text) or "Nobody yet", "\n".join(writers_text) or "Nobody yet"
     
@@ -124,7 +128,7 @@ class New_Tracker(commands.Cog):
                 "read": self.calculate_score(stats["read"], user_id, meta, day, "readers", past_day_display),
                 "write": self.calculate_score(stats["write"], user_id, meta, day, "writers", past_day_display),
             }
-            
+        
         return display_data
     
     def calculate_score(self, score: int, user_id: str, meta: dict, current_day: str, category: str, past_day_display: bool) -> int:
@@ -385,7 +389,7 @@ class New_Tracker(commands.Cog):
             # Edits the current message.
             if day == "today's ":
                 readers_text, writers_text = self.format_progress(
-                    leaderbard_copy, sorted(set(meta[day + "readers"]), reverse=True), sorted(set(meta[day + "writers"]), reverse=True) 
+                    leaderbard_copy, set(meta[day + "readers"]), set(meta[day + "writers"]), 
                 )
                 
                 new_content = (
@@ -408,8 +412,8 @@ class New_Tracker(commands.Cog):
                     
                     readers_text, writers_text = self.format_progress(
                         self.display_current_score(data, meta, DAYS[index], past_day_display=True), 
-                        sorted(set(meta[DAYS[index] + "readers"]), reverse=True), 
-                        sorted(set(meta[DAYS[index] + "writers"]), reverse=True) 
+                        set(meta[DAYS[index] + "readers"]), 
+                        set(meta[DAYS[index] + "writers"]),
                     )
                     
                     new_content = (
