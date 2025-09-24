@@ -295,21 +295,21 @@ class New_Tracker(commands.Cog):
             print(f"message id not in list, id: {payload.message_id}")
             return
         
-        self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
-        async with self.data_lock:
-            updated = False
-            day = ""
-            if len(self.tracker_message_ids) > 2:
-                if payload.message_id == self.tracker_message_ids[0]:
-                    day = "two days ago's "
-                elif payload.message_id == self.tracker_message_ids[1]:
-                    day = "yesterday's "
-                else:
-                    day = "today's "
-            else:
-                    day = "today's "
-                
+        # self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
         
+        updated = False
+        day = ""
+        if len(self.tracker_message_ids) > 2:
+            if payload.message_id == self.tracker_message_ids[0]:
+                day = "two days ago's "
+            elif payload.message_id == self.tracker_message_ids[1]:
+                day = "yesterday's "
+            else:
+                day = "today's "
+        else:
+                day = "today's "
+                
+        async with self.data_lock:
             meta = load_meta()
             data = load_data()
             user_id = str(payload.user_id)
@@ -362,6 +362,7 @@ class New_Tracker(commands.Cog):
             try:
                 message = self.channel.get_partial_message(self.leaderboard_message_id)
                 if not message:
+                    print("leaderboard partial message not found")
                     message = await self.channel.fetch_message(self.leaderboard_message_id)
                 await message.edit(content=updated_leaderboard)
             except Exception as e:
