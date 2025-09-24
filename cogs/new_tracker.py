@@ -14,6 +14,9 @@ import copy
 DATA_FILE = "data/new_tracker.json"
 META_FILE = "data/new_meta.json"
 CHANNEL = "TRACKER_CHANNEL_ID"
+DAYS = ["two days ago's ", "yesterday's ", "today's "]
+READING_EMOJI = "frogReading"
+WRITING_EMOJI = "bulbaWriter"
 
 def load_data():
     if not os.path.exists(DATA_FILE):
@@ -125,11 +128,10 @@ class New_Tracker(commands.Cog):
         return display_data
     
     def calculate_score(self, score: int, user_id: str, meta: dict, current_day: str, category: str, past_day_display: bool) -> int:
-        days = ["two days ago's ", "yesterday's ", "today's "]
-        
+        days = DAYS.copy()
         if past_day_display:
-            cutoff = days.index(current_day) + 1
-            active_days = days[:cutoff]
+            cutoff = DAYS.index(current_day) + 1
+            active_days = DAYS[:cutoff]
             days = active_days
             
         for day in days:
@@ -164,8 +166,13 @@ class New_Tracker(commands.Cog):
         now = datetime.datetime.now(pytz.timezone("US/Pacific"))
         print(f"daily tracker update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
         await self.bot.wait_until_ready()
-        self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
-        self.guild = self.channel.guild
+        
+        # These two lines are intentionally redundant,
+        # because on_ready already loads the channel, 
+        # but I have them here as a sanity check.
+        if not self.channel:
+            self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
+            self.guild = self.channel.guild
         
         async with self.data_lock:
             data = load_data()
@@ -295,8 +302,6 @@ class New_Tracker(commands.Cog):
             print(f"message id not in list, id: {payload.message_id}")
             return
         
-        # self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
-        
         updated = False
         day = ""
         if len(self.tracker_message_ids) > 2:
@@ -308,35 +313,37 @@ class New_Tracker(commands.Cog):
                 day = "today's "
         else:
                 day = "today's "
-                
+        
+        emoji = payload.emoji.name
+        user_id = str(payload.user_id)
+        
         async with self.data_lock:
             meta = load_meta()
-            data = load_data()
-            user_id = str(payload.user_id)
-            data.setdefault(user_id, {"read": 0, "write": 0})
-            emoji = payload.emoji.name
             
             # Adds or removes user from current day.
             if added:
-                if emoji == "frogReading" and user_id not in set(meta[day + "readers"]):
+                if emoji == READING_EMOJI and user_id not in set(meta[day + "readers"]):
                     meta[day + "readers"].append(user_id)
                     updated = True
                     
-                elif emoji == "bulbaWriter" and user_id not in set(meta[day + "writers"]):
+                elif emoji == WRITING_EMOJI and user_id not in set(meta[day + "writers"]):
                     meta[day + "writers"].append(user_id)
                     updated = True
                     
             else:
-                if emoji == "frogReading" and user_id in set(meta[day + "readers"]):
+                if emoji == READING_EMOJI and user_id in set(meta[day + "readers"]):
                     meta[day + "readers"].remove(user_id)
                     updated = True
                     
-                elif emoji == "bulbaWriter" and user_id in set(meta[day + "writers"]):
+                elif emoji == WRITING_EMOJI and user_id in set(meta[day + "writers"]):
                     meta[day + "writers"].remove(user_id)
                     updated = True
             
             save_meta(meta)
         if updated:
+            data = load_data()
+            data.setdefault(user_id, {"read": 0, "write": 0})
+            
             leaderbard_copy = self.display_current_score(data, meta, day, past_day_display=False)
                         
             sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=True)
@@ -345,7 +352,9 @@ class New_Tracker(commands.Cog):
             read_lines = [f"{self.reading_emoji} **Reading Streaks**"]
             write_lines = [f"{self.writing_emoji } **Writing Streaks**"]
             
+            # If one name is missing, all of them are missing.
             if (payload.user_id not in self.member_names):
+                print("Fetching missing member names")
                 for user_id in data:
                     self.member_names[user_id] = await self.resolve_member_name(int(user_id))
                 
@@ -389,13 +398,12 @@ class New_Tracker(commands.Cog):
                     print(f"Couldn't edit today's tracker message: {e}")
             else:
                 # Retroactively alters current and any existing future days based on new info.
-                days = ["two days ago's ", "yesterday's ", "today's "]
                 for index in range(len(meta["tracker_message_ids"])):
                     
                     readers_text, writers_text = self.format_progress(
-                        self.display_current_score(data, meta, days[index], past_day_display=True), 
-                        set(meta[days[index] + "readers"]), 
-                        set(meta[days[index] + "writers"]) 
+                        self.display_current_score(data, meta, DAYS[index], past_day_display=True), 
+                        set(meta[DAYS[index] + "readers"]), 
+                        set(meta[DAYS[index] + "writers"]) 
                     )
                     
                     new_content = (
