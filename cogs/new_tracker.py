@@ -81,6 +81,8 @@ class New_Tracker(commands.Cog):
                 self.channel = self.bot.get_channel(int(channel_id))
                 self.guild = self.channel.guild
                 print(f"on ready: using {self.channel}")
+        #self.writing_emoji = self.bot.get_emoji(1061522051501928498)
+        #self.reading_emoji = self.bot.get_emoji(1397736959882956842)
               
     def cog_unload(self):
         self.run_daily_update.cancel()
@@ -338,9 +340,6 @@ class New_Tracker(commands.Cog):
             save_meta(meta)
         if updated:
             leaderbard_copy = self.display_current_score(data, meta, day, past_day_display=False)
-            
-            self.writing_emoji = self.bot.get_emoji(1061522051501928498)
-            self.reading_emoji = self.bot.get_emoji(1397736959882956842)
                         
             sorted_by_read = sorted(leaderbard_copy.items(), key=lambda item: item[1]['read'], reverse=True)
             sorted_by_write = sorted(leaderbard_copy.items(), key=lambda item: item[1]['write'], reverse=True)
