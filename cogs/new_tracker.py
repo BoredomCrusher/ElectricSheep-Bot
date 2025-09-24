@@ -81,13 +81,12 @@ class New_Tracker(commands.Cog):
                 self.channel = self.bot.get_channel(int(channel_id))
                 self.guild = self.channel.guild
                 print(f"on ready: using {self.channel}")
-            
-        
+              
     def cog_unload(self):
         self.run_daily_update.cancel()
         self.delete_old_messages.cancel()
         
-    async def resolve_member_name(self, user_id: int):
+    async def resolve_member_name(self, user_id: int) -> str:
         # Try cached lookup first
         member = self.guild.get_member(user_id)
         if not member:
@@ -98,7 +97,7 @@ class New_Tracker(commands.Cog):
 
         return member.display_name
         
-    def format_progress(self, data, today_readers, today_writers):
+    def format_progress(self, data: dict, today_readers: set, today_writers: set) -> str:
         readers_text = []
         writers_text = []
 
@@ -141,7 +140,7 @@ class New_Tracker(commands.Cog):
 
         return score
     
-    def make_leaderboard(self, sorted_by_read, sorted_by_write, read_lines, write_lines):
+    def make_leaderboard(self, sorted_by_read: list, sorted_by_write: list, read_lines: list, write_lines: list) -> str:
         for user_id, scores in sorted_by_read:
             name = self.member_names[user_id]
             read_lines.append(f"{name}: {scores['read']}")
