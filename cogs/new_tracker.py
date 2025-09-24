@@ -356,7 +356,7 @@ class New_Tracker(commands.Cog):
             if (user_id not in self.member_names):
                 print("Fetching missing member names")
                 for user_id in data:
-                    self.member_names[user_id] = await self.resolve_member_name(int(user_id))
+                    self.member_names[int(user_id)] = await self.resolve_member_name(int(user_id))
                 
             updated_leaderboard = self.make_leaderboard(
                 sorted_by_read, 
