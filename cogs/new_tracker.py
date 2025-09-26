@@ -411,7 +411,7 @@ class New_Tracker(commands.Cog):
                 )
                 
                 new_content = (
-                    f"Today is **{today.strftime("%A, %B %d, %Y")}**."
+                    f"Today is **{today.strftime('%A, %B %d, %Y')}**."
                     f"\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                     f"**Today's readers:**\n{readers_text}\n\n"
                     f"**Today's writers:**\n{writers_text}"
@@ -437,7 +437,7 @@ class New_Tracker(commands.Cog):
                     )
                     
                     new_content = (
-                        f"Today is **{(today - timedelta(days = index)).strftime("%A, %B %d, %Y")}"
+                        f"Today is **{(today - timedelta(days = index)).strftime('%A, %B %d, %Y')}"
                         f"**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                         f"**Today's readers:**\n{readers_text}\n\n"
                         f"**Today's writers:**\n{writers_text}"
