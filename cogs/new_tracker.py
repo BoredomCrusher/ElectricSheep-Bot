@@ -400,6 +400,8 @@ class New_Tracker(commands.Cog):
             except Exception as e:
                 print(f"Couldn't edit leaderboard: {e}")
             
+            # This currently updates every message to be the most recent day,
+            # which is a logic error.
             today = datetime.date.today().strftime("%A, %B %d, %Y")
 
             # Edits the current message.
