@@ -5,14 +5,16 @@
 
 Non-Paying:
 
--# - [**Strange Daze Magazine - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20140) — Genres: *General*, Lengths: *Flash*, Pay: *Non-Paying*
--# - [**Strange Daze Magazine - Nonfiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20225) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
--# - [**Strange Daze Magazine - Poetry- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20224) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
+-# - [**Ambient Receiver - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20215) — Genres: *General*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
+-# - [**Ambient Receiver - Nonfiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20262) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
+-# - [**Ambient Receiver - Poetry- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20261) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
+-# - [**The Solitude Diaries  - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20189) — Genres: *General*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
+-# - [**The Solitude Diaries  - Nonfiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20256) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
+-# - [**The Solitude Diaries  - Poetry- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20255) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
 
 Paying:
 
--# - [**Dorothy, a publishing project - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20191) — Genres: *General*, Lengths: *Novel*, Pay: *Unknown*
--# - [**Dorothy, a publishing project - Nonfiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20232) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Unknown*
+-# - [**Silence Between Stars- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20183) — Genres: *Fantasy, Horror, Science Fiction*, Lengths: *Short Story*, Pay: *$10/piece*
 
 
 **Current Markets:**
@@ -20,49 +22,47 @@ Paying:
 
 Non_Paying:
 
+-# - [**Fluorescent Magazine - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20168) — Genres: *General*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
 -# - [**Fluorescent Magazine - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20243) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
 -# - [**Fluorescent Magazine - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20242) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
--# - [**Forgotten: A Marroween Contest - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20222) — Genres: *General, Erotica*, Lengths: *Poetry*, Pay: *Non-Paying*
--# - [**Queerteen Press**](https://thegrinder.diabolicalplots.com//Market/Index/20156) — Genres: *Young Adult*, Lengths: *Novel*, Pay: *Non-Paying*
--# - [**Spreading the Fire Publishing - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20138) — Genres: *General*, Lengths: *Novel, Novella, Novelette*, Pay: *Non-Paying*
--# - [**The PoArtMo Magazine - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20167) — Genres: *General*, Lengths: *Flash*, Pay: *Non-Paying*
+-# - [**Mother Tongue Journal - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20264) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
+-# - [**Mother Tongue Journal - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20263) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
 -# - [**The PoArtMo Magazine - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20241) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
 -# - [**The PoArtMo Magazine - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20240) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
 
 Paying:
 
--# - [**Drek Death and Doom**](https://thegrinder.diabolicalplots.com//Market/Index/20154) — Genres: *Horror, Suspense/Thriller*, Lengths: *Short Story*, Pay: *1¢/word*
--# - [**Gilgamesh**](https://thegrinder.diabolicalplots.com//Market/Index/20207) — Genres: *General, Fantasy, Science Fiction*, Lengths: *Short Story*, Pay: *8¢/word*
--# - [**Hidden Villains: Duos**](https://thegrinder.diabolicalplots.com//Market/Index/20185) — Genres: *Fantasy, Horror, Science Fiction, Suspense/Thriller*, Lengths: *Short Story*, Pay: *$10/piece*
--# - [**Liquid Silver: An Anthology of Sci Fi and Fantasy by Sex Workers**](https://thegrinder.diabolicalplots.com//Market/Index/20141) — Genres: *Fantasy, Horror, Science Fiction*, Lengths: *Short Story*, Pay: *$200/piece*
--# - [**Seven Story Hotel - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20203) — Genres: *General, Science Fiction*, Lengths: *Flash, Short Story*, Pay: *$45/piece*
--# - [**Seven Story Hotel - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20204) — Genres: *General, Science Fiction*, Lengths: *Poetry*, Pay: *$45/poem*
--# - [**Small Harbor Publishing - Poetry(fees)**](https://thegrinder.diabolicalplots.com//Market/Index/20227) — Genres: *General*, Lengths: *Poetry*, Pay: *(fees)*
--# - [**Spreading the Fire Publishing - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20223) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Unknown*
--# - [**Strange Pilgrims - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20211) — Genres: *General, Fantasy, Science Fiction, Children*, Lengths: *Flash, Short Story*, Pay: *$50/piece*
-
-**Just Added Today:**
-
-Non-Paying:
-
--# - [**Dear Human**](https://thegrinder.diabolicalplots.com//Market/Index/20151) — Genres: *Fantasy, Science Fiction*, Lengths: *Short Story, Flash*, Pay: *Non-Paying*
--# - [**Fluorescent Magazine - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20168) — Genres: *General*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
--# - [**Infinite Valley Magazine**](https://thegrinder.diabolicalplots.com//Market/Index/20176) — Genres: *Fantasy, Science Fiction*, Lengths: *Short Story, Novelette, Novella*, Pay: *Non-Paying*
--# - [**The Solitude Diaries  - Fiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20189) — Genres: *General*, Lengths: *Short Story, Flash*, Pay: *Non-Paying*
--# - [**The Solitude Diaries  - Nonfiction- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20256) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
--# - [**The Solitude Diaries  - Poetry- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20255) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
-
-Paying:
-
--# - [**Eerie Christmas Anthology Series**](https://thegrinder.diabolicalplots.com//Market/Index/20238) — Genres: *Fantasy, Horror*, Lengths: *Flash, Short Story*, Pay: *$5/piece*
+-# - [**Eerie Christmas Anthology Series**](https://thegrinder.diabolicalplots.com//Market/Index/20238) — Genres: *Fantasy, Horror*, Lengths: *Short Story, Flash*, Pay: *$5/piece*
 -# - [**Further Light Magazine - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20173) — Genres: *Fantasy, Science Fiction*, Lengths: *Short Story*, Pay: *$25/piece*
 -# - [**Further Light Magazine - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20252) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *$25/piece*
 -# - [**Further Light Magazine - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20251) — Genres: *Fantasy, Science Fiction*, Lengths: *Poetry*, Pay: *$3/poem*
 -# - [**Helen of Troy**](https://thegrinder.diabolicalplots.com//Market/Index/20206) — Genres: *Fantasy*, Lengths: *Short Story*, Pay: *8¢/word*
 -# - [**No Laughing Matter**](https://thegrinder.diabolicalplots.com//Market/Index/20233) — Genres: *Horror, Suspense/Thriller, Humor*, Lengths: *Short Story*, Pay: *8¢/word*
--# - [**Silence Between Stars- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20183) — Genres: *Fantasy, Horror, Science Fiction*, Lengths: *Short Story*, Pay: *$10/piece*
--# - [**Small Harbor Publishing - Fiction(fees)**](https://thegrinder.diabolicalplots.com//Market/Index/20152) — Genres: *General*, Lengths: *Short Story, Novelette, Story Collection*, Pay: *(fees)*
--# - [**Strange Pilgrims - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20239) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *$50/piece*
--# - [**Thalia Press Cat Anthology**](https://thegrinder.diabolicalplots.com//Market/Index/20209) — Genres: *Mystery/Crime*, Lengths: *Flash, Short Story, Novelette, Novella*, Pay: *$25/piece*
 -# - [**The Innovation Press - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20175) — Genres: *Children, Middle Grade*, Lengths: *Novel*, Pay: *Unknown*
 -# - [**The Innovation Press - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20253) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Unknown*
+-# - [**Walls Anthology**](https://thegrinder.diabolicalplots.com//Market/Index/20218) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Unknown*
+-# - [**Walpurgis Witcheries**](https://thegrinder.diabolicalplots.com//Market/Index/20214) — Genres: *Action/Adventure, Fantasy, Horror*, Lengths: *Short Story, Novelette*, Pay: *1¢/word*
+
+**Just Added Today:**
+
+Non-Paying:
+
+-# - [**Daydream Believer: Crime Stories Inspired by the Music of the Monkees- Temp Closed -**](https://thegrinder.diabolicalplots.com//Market/Index/20249) — Genres: *Mystery/Crime*, Lengths: *Short Story*, Pay: *Non-Paying*
+-# - [**FERAL: A Queer Anthology Of Primal Desire - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20246) — Genres: *General, Erotica, Fantasy, Horror, Science Fiction*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
+-# - [**FERAL: A Queer Anthology Of Primal Desire - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20275) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
+-# - [**FERAL: A Queer Anthology Of Primal Desire - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20274) — Genres: *General, Erotica, Fantasy, Horror, Science Fiction*, Lengths: *Poetry*, Pay: *Non-Paying*
+-# - [**Infinite Valley Magazine**](https://thegrinder.diabolicalplots.com//Market/Index/20176) — Genres: *Fantasy, Science Fiction*, Lengths: *Short Story, Novella, Novelette*, Pay: *Non-Paying*
+-# - [**Mother Tongue Journal - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20216) — Genres: *General*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
+-# - [**Snowfall and Starlight**](https://thegrinder.diabolicalplots.com//Market/Index/20245) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
+-# - [**Strip Mall Magazine  - Fiction**](https://thegrinder.diabolicalplots.com//Market/Index/20237) — Genres: *General*, Lengths: *Flash, Short Story*, Pay: *Non-Paying*
+-# - [**Strip Mall Magazine  - Nonfiction**](https://thegrinder.diabolicalplots.com//Market/Index/20271) — Genres: *Unspecified*, Lengths: *Nonfiction*, Pay: *Non-Paying*
+-# - [**Strip Mall Magazine  - Poetry**](https://thegrinder.diabolicalplots.com//Market/Index/20270) — Genres: *General*, Lengths: *Poetry*, Pay: *Non-Paying*
+-# - [**ivy.**](https://thegrinder.diabolicalplots.com//Market/Index/20248) — Genres: *Fantasy, Science Fiction*, Lengths: *Flash*, Pay: *Non-Paying*
+
+Paying:
+
+-# - [**Faun by Moonlight**](https://thegrinder.diabolicalplots.com//Market/Index/20213) — Genres: *General, Literary*, Lengths: *Novelette, Short Story, Flash*, Pay: *$50/piece*
+-# - [**Gender Ever After**](https://thegrinder.diabolicalplots.com//Market/Index/20247) — Genres: *Erotica, Fantasy, Romance, Science Fiction, Historical*, Lengths: *Short Story*, Pay: *$50/piece*
+-# - [**Thalia Press Cat Anthology**](https://thegrinder.diabolicalplots.com//Market/Index/20209) — Genres: *Mystery/Crime*, Lengths: *Flash, Novelette, Short Story, Novella*, Pay: *$25/piece*
+-# - [**Tir Literary Magazine**](https://thegrinder.diabolicalplots.com//Market/Index/20244) — Genres: *General*, Lengths: *Short Story, Novella, Novelette*, Pay: *$25/piece*
+-# - [**“Folk Tales” / “Faux Trails” / “Fox Tails” Contest**](https://thegrinder.diabolicalplots.com//Market/Index/20235) — Genres: *Fantasy, Horror, Science Fiction*, Lengths: *Novelette, Novella, Flash, Short Story*, Pay: *$107/piece*

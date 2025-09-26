@@ -192,10 +192,10 @@ class New_Tracker(commands.Cog):
             data = load_data()
             meta = load_meta()
             
-            # Prevents duplicate penalty if already updated today.
-            if meta["last_updated_date"] ==  today_str:
-                print("Daily update already performed today.")
-                return
+            # # Prevents duplicate penalty if already updated today.
+            # if meta["last_updated_date"] ==  today_str:
+            #     print("Daily update already performed today.")
+            #     return
             
             for user_id in data:
                 if (user_id not in self.member_names):
