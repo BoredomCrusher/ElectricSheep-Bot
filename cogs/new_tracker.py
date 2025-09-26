@@ -427,7 +427,7 @@ class New_Tracker(commands.Cog):
             else:
                 # Retroactively alters current and any existing future days based on new info.
                 # Loops backwards, 2 to 0, inclusive.
-                for index in range(len(meta["tracker_message_ids"] - 1), -1, -1):
+                for index in range(len(meta["tracker_message_ids"]) - 1, -1, -1):
                     
                     readers_text, writers_text = self.format_progress(
                         self.display_current_score(data, meta, DAYS[index], past_day_display=True), 
