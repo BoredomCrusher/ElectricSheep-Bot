@@ -13,6 +13,7 @@ import copy
 
 DATA_FILE = "data/new_tracker.json"
 META_FILE = "data/new_meta.json"
+LOG_FILE = "data/new_meta_log.json"
 CHANNEL = "TRACKER_CHANNEL_ID"
 DAYS = ["two days ago's ", "yesterday's ", "today's "]
 READING_EMOJI = "frogReading"
@@ -37,6 +38,16 @@ def save_data(data):
 def save_meta(meta):
     with open(META_FILE, "w") as f:
         json.dump(meta, f, indent=2)
+        
+def load_log():
+    if not os.path.exists(LOG_FILE):
+        return {}
+    with open(LOG_FILE, "r") as f:
+        return json.load(f)
+    
+def save_log(log):
+    with open(LOG_FILE, "w") as f:
+        json.dump(log, f, indent=2)
 
 class New_Tracker(commands.Cog):
     def __init__(self, bot):
@@ -193,6 +204,7 @@ class New_Tracker(commands.Cog):
             meta = load_meta()
             
             # # Prevents duplicate penalty if already updated today.
+            # Due to the way this code currently loops, this is unnecessary.
             # if meta["last_updated_date"] ==  today_str:
             #     print("Daily update already performed today.")
             #     return
@@ -238,8 +250,12 @@ class New_Tracker(commands.Cog):
             await msg.add_reaction(str(self.reading_emoji))
             await msg.add_reaction(str(self.writing_emoji))
             
-            # Updates for retroactive scoring.
+            # Logging for scoring history for potential bugfixes.
+            log = load_log()
+            log[today] = meta
+            save_log(log)
             
+            # Updates for retroactive scoring.
             meta["two days ago's readers"] = meta["yesterday's readers"] 
             meta["two days ago's writers"] = meta["yesterday's writers"] 
             meta["yesterday's readers"] = meta["today's readers"]
