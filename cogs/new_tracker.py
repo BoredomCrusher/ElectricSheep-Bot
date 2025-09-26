@@ -402,7 +402,7 @@ class New_Tracker(commands.Cog):
             
             # This currently updates every message to be the most recent day,
             # which is a logic error.
-            today = datetime.date.today().strftime("%A, %B %d, %Y")
+            today = datetime.date.today()
 
             # Edits the current message.
             if day == "today's ":
@@ -411,7 +411,8 @@ class New_Tracker(commands.Cog):
                 )
                 
                 new_content = (
-                    f"Today is **{today}**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
+                    f"Today is **{today.strftime("%A, %B %d, %Y")}**."
+                    f"\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                     f"**Today's readers:**\n{readers_text}\n\n"
                     f"**Today's writers:**\n{writers_text}"
                 )
@@ -426,7 +427,8 @@ class New_Tracker(commands.Cog):
                     print(f"Couldn't edit today's tracker message: {e}")
             else:
                 # Retroactively alters current and any existing future days based on new info.
-                for index in range(len(meta["tracker_message_ids"])):
+                # Loops backwards, 2 to 0, inclusive.
+                for index in range(len(meta["tracker_message_ids"]), -1, -1):
                     
                     readers_text, writers_text = self.format_progress(
                         self.display_current_score(data, meta, DAYS[index], past_day_display=True), 
@@ -435,7 +437,8 @@ class New_Tracker(commands.Cog):
                     )
                     
                     new_content = (
-                        f"Today is **{today}**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
+                        f"Today is **{(today - timedelta(days = index)).strftime("%A, %B %d, %Y")}"
+                        f"**.\nReact with {self.reading_emoji} if you read today and {self.writing_emoji} if you wrote today.\n\n"
                         f"**Today's readers:**\n{readers_text}\n\n"
                         f"**Today's writers:**\n{writers_text}"
                     )
