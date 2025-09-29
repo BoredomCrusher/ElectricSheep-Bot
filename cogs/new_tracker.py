@@ -286,7 +286,7 @@ class New_Tracker(commands.Cog):
         
     @tasks.loop(time=datetime.time(hour=0, minute=0, tzinfo=ZoneInfo("America/Los_Angeles")))
     async def delete_old_messages(self):
-        MAX_AGE = timedelta(hours = 49)
+        MAX_AGE = timedelta(days = 2)
         
         self.channel = self.bot.get_channel(int(os.getenv(CHANNEL)))
         async for message in self.channel.history(limit=100):
