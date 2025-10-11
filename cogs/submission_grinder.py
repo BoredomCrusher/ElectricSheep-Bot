@@ -17,7 +17,6 @@ import requests
 import json, os
 import asyncio
 import datetime
-import pytz
 
 NEW_MARKETS_MESSAGE_FILE = "data/new_markets_message.txt"
 CHANNEL = "SUBMISSION_GRINDER_CHANNEL_ID"
@@ -113,7 +112,8 @@ class Submission_Grinder(commands.Cog):
         await self.bot.wait_until_ready()
     
     async def daily_grinder_update(self):
-        now = datetime.datetime.now(pytz.timezone("US/Pacific"))
+        PST = ZoneInfo("America/Los_Angeles")
+        now = datetime.datetime.now(PST)
         print(f"daily grinder update posted at {now.strftime('%Y-%m%d %H:%M%S %Z')}")
         
         new_markets = parse_recently_added(read_cached_html())

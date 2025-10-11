@@ -1,0 +1,56 @@
+{
+  "Monday, September 29, 2025": {
+    "tracker_message_ids": [
+      1421181357429756057,
+      1421390908523548765,
+      1422115685693390848
+    ],
+    "last_updated_date": "2025-09-29",
+    "today's readers": [],
+    "yesterday's readers": [
+      "572888402173886466",
+      "181982407283572746"
+    ],
+    "two days ago's readers": [
+      "572888402173886466",
+      "181982407283572746",
+      "371172347937423362"
+    ],
+    "today's writers": [],
+    "yesterday's writers": [
+      "572888402173886466"
+    ],
+    "two days ago's writers": [
+      "572888402173886466",
+      "371172347937423362"
+    ],
+    "leaderboard_message_id": 1422115683721941022
+  },
+  "Friday, October 10, 2025": {
+    "tracker_message_ids": [
+      1426299346122571910,
+      1426299465651982526,
+      1426299592563232828
+    ],
+    "today's readers": [
+      "371172347937423362"
+    ],
+    "yesterday's readers": [
+      "371172347937423362"
+    ],
+    "two days ago's readers": [
+      "371172347937423362"
+    ],
+    "today's writers": [
+      "371172347937423362"
+    ],
+    "yesterday's writers": [
+      "371172347937423362"
+    ],
+    "two days ago's writers": [
+      "371172347937423362"
+    ],
+    "leaderboard_message_id": 1426299591099289853,
+    "last_updated_date": "2025-10-10"
+  }
+}
